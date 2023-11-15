@@ -26,8 +26,19 @@ module.exports = (_, argv) => ({
         },
       },
       {
-        test: /\.(css|s[ac]ss)$/i,
+        test: /\.(css)$/i,
         use: ["style-loader", "css-loader", "postcss-loader"],
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader",
+        ],
       },
       {
         test: /\.(ts|tsx|js|jsx)$/,
@@ -44,7 +55,7 @@ module.exports = (_, argv) => ({
       name: "asset",
       filename: "remoteEntry.js",
       remotes: {},
-      exposes: {},
+      exposes: { "./AssetsDetail": "./src/pages/AssetsDetail" },
       shared: {
         ...deps,
         react: {

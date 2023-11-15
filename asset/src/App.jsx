@@ -2,13 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import "./index.css";
+import AssetsDetail from "./pages/AssetsDetail";
 
 const App = () => (
-  <div className="container">
-    <div>Name: asset</div>
-    <div>Framework: react</div>
-    <div>Language: JavaScript</div>
-    <div>CSS: Empty CSS</div>
+  <div>
+    <AssetsDetail />
   </div>
 );
 ReactDOM.render(<App />, document.getElementById("app"));

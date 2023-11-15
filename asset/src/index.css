@@ -5,6 +5,8 @@ body {
 .container {
   font-size: 3rem;
   margin: auto;
-  max-width: 800px;
-  margin-top: 20px;
+  max-width: 1725px;
+}
+* {
+  margin: 0;
 }

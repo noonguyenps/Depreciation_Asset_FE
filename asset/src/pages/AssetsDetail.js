@@ -1,25 +1,113 @@
 import React, { useState, useEffect } from "react";
 import "./sass/style.scss";
+import ReactPaginate from "react-paginate";
+import ReactDOM from "react-dom";
 
 const AssetsDetail = () => {
   const [assetData, setAssetData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [excelData, setExcelData] = useState(null);
+  //pagination
+  const [currentPage, setCurrentPage] = useState(0);
+  const [assetsPerPage, setAssetsPerPage] = useState(5);
+  const [totalPage, setTotalPage] = useState(0);
+  //filterDate
+  const [fromDate, setFromDate] = useState("2019-12-24");
+  const [toDate, setToDate] = useState("2023-12-24");
+  const [assetFiltered, setAssetFiltered] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/asset");
+        const response = await fetch(
+          `http://localhost:8080/api/asset?page=${currentPage}&size=${assetsPerPage}`
+        );
+
         const data = await response.json();
+        setTotalPage(data.data.totalPage);
         setAssetData(data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
-  console.log("data", assetData);
+  }, [currentPage]);
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    console.log(file);
+    const confirmed = window.confirm(
+      "Are you sure you want to import this Excel file?"
+    );
+
+    if (confirmed && file) {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch(
+          "http://localhost:8080/api/asset/upload-assets-data",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log("Success:", result.Message);
+        } else {
+          console.error("Failed to upload Excel data.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+  };
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
+
+  useEffect(() => {
+    let timer = null;
+
+    // Fetch data from the API based on the current date range
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/asset/date?fromDate=${fromDate}&toDate=${toDate}&page=${currentPage}&size=${assetsPerPage}`
+        );
+        const data = await response.json();
+        setAssetData(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    const debounceApiCall = () => {
+      clearTimeout(timer); // Clear the existing timer
+      timer = setTimeout(() => fetchData(), 500); // Set a new timer
+    };
+
+    // Call the debounced function on fromDate or toDate change
+    debounceApiCall();
+
+    // Cleanup function to clear the timer on component unmount
+    return () => {
+      clearTimeout(timer);
+    }; // Fetch data when fromDate or toDate changes
+  }, [fromDate, toDate]);
+
+  const handleFromDateChange = (e) => {
+    setFromDate(e.target.value);
+  };
+
+  const handleToDateChange = (e) => {
+    setToDate(e.target.value);
+  };
+
   return (
     <div className="asset__content">
       <div className="asset-content__title">
@@ -210,7 +298,7 @@ const AssetsDetail = () => {
           </div>
         </div>
         <div className="content-sellection__state">
-          <svg
+          {/* <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -225,7 +313,19 @@ const AssetsDetail = () => {
             />
           </svg>
           <span>Ngày nhập kho:</span>
-          <p>--/--/--</p>
+          <p>--/--/--</p> */}
+          <label>
+            From Date:
+            <input
+              type="date"
+              value={fromDate}
+              onChange={handleFromDateChange}
+            />
+          </label>
+          <label>
+            To Date:
+            <input type="date" value={toDate} onChange={handleToDateChange} />
+          </label>
         </div>
       </div>
       <div className="asset-content__detail">
@@ -259,11 +359,11 @@ const AssetsDetail = () => {
                     <td>{asset.assetName}</td>
                     <td>{asset.userIdUsed}</td>
                     <td>{asset.assetTypeId}</td>
-                    <td>{asset.assetGroup}</td>
-                    <td>{asset.entryDate}</td>
+                    <td>{asset.assetGroup || "Sản xuất"}</td>
+                    <td>{<asset className="dateInStored"></asset>}</td>
                     <td>{asset.statusName}</td>
-                    <td>{asset.initialValue}</td>
-                    <td>{asset.activationStatus}</td>
+                    <td>{asset.price}</td>
+                    <td>{asset.status}</td>
                     <td>
                       <button>Edit</button>
                       <button>Delete</button>
@@ -273,8 +373,41 @@ const AssetsDetail = () => {
             </tbody>
           </table>
         </div>
+        <div>
+          <input type="file" accept=".xls, .xlsx" onChange={handleFileChange} />
+          {excelData && (
+            <div>
+              <h2>Imported Excel Data</h2>
+              {/* Display your data here */}
+              <pre>{JSON.stringify(excelData, null, 2)}</pre>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* <div className="asset__pagination"> */}
+      <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={1}
+        marginPagesDisplayed={2}
+        pageCount={totalPage}
+        previousLabel="< previous"
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+      />
     </div>
+    // </div>
   );
 };
+
 export default AssetsDetail;

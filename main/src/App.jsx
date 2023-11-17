@@ -7,7 +7,7 @@ const AssetsDetail = React.lazy(() => import("asset/AssetsDetail"));
 
 const App = () => (
   <div className="container">
-    <AssetsSideBar />\{" "}
+    <AssetsSideBar />
     <Suspense fallback={<div>Loading...</div>}>
       <AssetsDetail />
     </Suspense>

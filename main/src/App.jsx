@@ -6,7 +6,7 @@ import "./index.css";
 const AssetsDetail = React.lazy(() => import("asset/AssetsDetail"));
 
 const App = () => (
-  <div className="container">
+  <div className="contain">
     <AssetsSideBar />
     <Suspense fallback={<div>Loading...</div>}>
       <AssetsDetail />

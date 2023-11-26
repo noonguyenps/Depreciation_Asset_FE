@@ -19,6 +19,18 @@ module.exports = (_, argv) => ({
   module: {
     rules: [
       {
+        test: /\.(png|jpg|jpeg|gif|svg)$/i,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "images/", // or whatever path you prefer
+            },
+          },
+        ],
+      },
+      {
         test: /\.m?js/,
         type: "javascript/auto",
         resolve: {

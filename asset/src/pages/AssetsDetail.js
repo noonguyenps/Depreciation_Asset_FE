@@ -4,7 +4,9 @@ import ReactPaginate from "react-paginate";
 import ReactDOM from "react-dom";
 import useDebounce from "../hooks/useDebounce";
 import Loading from "../components/loading";
-import logo from "../components/assets/logo.jpg";
+import importIcon from "../components/assets/importIcon.png";
+import addIcon from "../components/assets/importIcon.png";
+import assetInfo from "../components/assets/assetInfo.png";
 
 const AssetsDetail = () => {
   const [assetData, setAssetData] = useState(null);
@@ -21,6 +23,9 @@ const AssetsDetail = () => {
   const toDateRef = useRef(null);
   const fromDateDebounce = useDebounce(fromDate, 500);
   const toDateDebounce = useDebounce(toDate, 500);
+  //filterUser
+  const [userId, setUserId] = useState("");
+  const userDebounce = useDebounce(userId, 500);
 
   //typeAsset
   const [selectedValue, setSelectedValue] = useState("all"); // 'all' or some default value
@@ -31,7 +36,7 @@ const AssetsDetail = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/asset/filter?page=${currentPage}&size=${assetsPerPage}&date?fromDate=${fromDate}&toDate=${toDate}`
+          `http://localhost:8080/api/asset/filter?page=${currentPage}&size=${assetsPerPage}&date?fromDate=${fromDate}&toDate=${toDate}&user=${userId}`
         );
 
         const data = await response.json();
@@ -46,7 +51,7 @@ const AssetsDetail = () => {
     };
 
     fetchData();
-  }, [currentPage, fromDateDebounce, toDateDebounce]);
+  }, [currentPage, fromDateDebounce, toDateDebounce, userDebounce]);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -100,210 +105,278 @@ const AssetsDetail = () => {
     setSelectedValue(event.target.value);
   };
 
+  const handleUserChange = (e) => {
+    setUserId(e);
+  };
+
   return (
     <div className="asset__content">
-      <div className="asset-content__title">
-        <img style={{ width: "50px", height: "50px" }} src={logo} alt="" />
-
-        <h2>Tài sản</h2>
-        <div className="importExcel">
-          <label htmlFor="fileInput" className="customFileInput">
-            Import File
-          </label>
-          <input
-            id="fileInput"
-            type="file"
-            accept=".xls, .xlsx"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
-          {excelData && (
-            <div>
-              <h2>Imported Excel Data</h2>
-              {/* Display your data here */}
-              <pre>{JSON.stringify(excelData, null, 2)}</pre>
+      <div className="content-top">
+        <div className="content-top__header">
+          <div className="content-top__title">
+            <h2>Danh sách tài sản</h2>
+          </div>
+          <div className="content-top__filter">
+            <div className="search-box">
+              <input
+                type="text"
+                className="search-box__input"
+                placeholder="Tìm kiếm..."
+                value={userId}
+                onChange={(e) => handleUserChange(e.target.value)}
+              />
+              <div className="search-box__icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                  />
+                </svg>
+              </div>
             </div>
-          )}
+          </div>
+        </div>
+        <div className="content-top__button">
+          <div className="asset-content__addMore">
+            <img src={addIcon} alt="" />
+            <span>Thêm tài sản</span>
+          </div>
+          <div className="importExcel">
+            <img className="importIcon" src={importIcon} alt="" />
+
+            <label htmlFor="fileInput" className="customFileInput">
+              Nhập file tài sản
+            </label>
+            <input
+              id="fileInput"
+              type="file"
+              accept=".xls, .xlsx"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+            />
+            {excelData && (
+              <div>
+                <h2>Imported Excel Data</h2>
+                {/* Display your data here */}
+                <pre>{JSON.stringify(excelData, null, 2)}</pre>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="asset-content__filter">
-        <button className="asset-content__addMore">Add Asset</button>
-        <div className="search-box">
-          <input
-            type="text"
-            className="search-box__input"
-            placeholder="Search..."
-          />
-          <div className="search-box__icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
       <div className="asset-content__sellection">
-        <div className="content-sellection__state">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 01-1.125-1.125v-3.75zM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-8.25zM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-2.25z"
-            />
-          </svg>
-          <span>Nhóm tài sản:</span>
-          <div className="state-dropdown">
-            <select
-              value={selectedValue}
-              onChange={handleSelectChange}
-              style={{ width: "100px" }}
-            >
-              <option value="all">Tất cả</option>
-              <option value="1">Máy móc, thiết bị động lực</option>
-              <option value="2">Máy móc, thiết bị công tác</option>
-              <option value="3">Dụng cụ làm việc đo lường, thí nghiệm</option>
-              <option value="4">Thiết bị và phương tiện vận tải</option>
-              <option value="5">Dụng cụ quản lý</option>
-              <option value="6">Nhà cửa, vật kiến trúc</option>
-              <option value="7">"Súc vật, vườn cây lâu năm"</option>
-            </select>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-              />
-            </svg>
+        <div className="content-sellection__infor">
+          <div className="info">
+            <img src={assetInfo} alt="" />
+            <div>
+              <p className="info-title">Tổng cộng tài sản</p>
+              <h2 className="info-number">1,250</h2>
+              <div className="info-change">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+                  />
+                </svg>
+                <span className="info-change__color">16%</span>
+                <span>tháng này</span>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="content-sellection__state">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"
-            />
-          </svg>
-          <span>Kiểu tài sản:</span>
-          <div className="state-dropdown">
-            <select
-              value={selectedValue}
-              onChange={handleSelectChange}
-              style={{ width: "100px" }}
-            >
-              <option value="all">Tất cả</option>
-              {!loading &&
-                assetData?.data.assets.map((asset, key) => (
-                  <option key={asset.assetId}>{asset.assetTypeName}</option>
-                ))}
-            </select>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-              />
-            </svg>
+          <div className="info">
+            <img src={assetInfo} alt="" />
+            <div>
+              <p className="info-title">Tổng cộng tài sản</p>
+              <h2 className="info-number">1,250</h2>
+              <div className="info-change">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+                  />
+                </svg>
+                <span className="info-change__color">16%</span>
+                <span>tháng này</span>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="content-sellection__state">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"
-            />
-          </svg>
-          <span>Kho hàng:</span>
-          <div className="state-dropdown">
-            <select
-              value={selectedValue}
-              onChange={handleSelectChange}
-              style={{ width: "100px" }}
-            >
-              <option value="all">Tất cả</option>
-              {!loading &&
-                assetData?.data.assets.map((asset, key) => (
-                  <option key={asset.assetId}>{asset.user.dept.name}</option>
-                ))}
-            </select>
+          <div className="info">
+            <img src={assetInfo} alt="" />
+            <div>
+              <p className="info-title">Tổng cộng tài sản</p>
+              <h2 className="info-number">1,250</h2>
+              <div className="info-change">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+                  />
+                </svg>
+                <span className="info-change__color">16%</span>
+                <span>tháng này</span>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="content-sellection__state">
-          <label>
-            Từ ngày:
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => handleDateChange(e, "from")}
-            />
-          </label>
-          <label>
-            Đến ngày:
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => handleDateChange(e, "to")}
-            />
-          </label>
         </div>
       </div>
+
       <div className="asset-content__detail">
         <div class="table-container">
           <table>
             <thead>
               <tr>
+                <th colSpan={9}>
+                  {" "}
+                  <div className="content-sellection">
+                    <div className="content-sellection__state">
+                      <span>Nhóm tài sản</span>
+                      <div className="state-dropdown">
+                        <select
+                          value={selectedValue}
+                          onChange={handleSelectChange}
+                          style={{ width: "100px" }}
+                          className="select-dropdown"
+                        >
+                          <option value="all">Tất cả</option>
+                          <option value="1">Máy móc, thiết bị động lực</option>
+                          <option value="2">Máy móc, thiết bị công tác</option>
+                          <option value="3">
+                            Dụng cụ làm việc đo lường, thí nghiệm
+                          </option>
+                          <option value="4">
+                            Thiết bị và phương tiện vận tải
+                          </option>
+                          <option value="5">Dụng cụ quản lý</option>
+                          <option value="6">Nhà cửa, vật kiến trúc</option>
+                          <option value="7">"Súc vật, vườn cây lâu năm"</option>
+                        </select>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="content-sellection__state">
+                      <span>Kiểu tài sản:</span>
+                      <div className="state-dropdown">
+                        <select
+                          value={selectedValue}
+                          onChange={handleSelectChange}
+                          style={{ width: "100px" }}
+                        >
+                          <option value="all">Tất cả</option>
+                          {!loading &&
+                            assetData?.data.assets.map((asset, key) => (
+                              <option key={asset.assetId}>
+                                {asset.assetTypeName}
+                              </option>
+                            ))}
+                        </select>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="content-sellection__state">
+                      <span>Kho hàng:</span>
+                      <div className="state-dropdown">
+                        <select
+                          value={selectedValue}
+                          onChange={handleSelectChange}
+                          style={{ width: "100px" }}
+                        >
+                          <option value="all">Tất cả</option>
+                          {!loading &&
+                            assetData?.data.assets.map((asset, key) => (
+                              <option key={asset.assetId}>
+                                {asset.user.dept.name}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="content-sellection__state">
+                      <div className="sellection-date">
+                        <div className="date">
+                          <label>Từ ngày:</label>
+                          <input
+                            type="date"
+                            value={fromDate}
+                            onChange={(e) => handleDateChange(e, "from")}
+                          />
+                        </div>
+                        <div className="date">
+                          <label>Đến ngày:</label>
+                          <input
+                            type="date"
+                            value={toDate}
+                            onChange={(e) => handleDateChange(e, "to")}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </th>
+              </tr>
+              <tr>
                 <th>
                   {" "}
                   <input type="checkbox" />
                 </th>
-
                 <th>Tài sản</th>
                 <th>Người sử dụng</th>
                 <th>Kiểu tài sản</th>
@@ -314,8 +387,9 @@ const AssetsDetail = () => {
                 <th>Kích hoạt</th>
               </tr>
             </thead>
+            {loading && <Loading />}
+
             <tbody>
-              {loading && <Loading />}
               {!loading &&
                 assetData?.data.assets.map((asset, index) => (
                   <tr key={asset.assetId}>
@@ -341,32 +415,38 @@ const AssetsDetail = () => {
                   </tr>
                 ))}
             </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan="9" className="paging">
+                  <div>
+                    {" "}
+                    <ReactPaginate
+                      nextLabel=">"
+                      onPageChange={handlePageClick}
+                      pageRangeDisplayed={1}
+                      marginPagesDisplayed={2}
+                      pageCount={totalPage}
+                      previousLabel="<"
+                      pageClassName="page-item"
+                      pageLinkClassName="page-link"
+                      previousClassName="page-item"
+                      previousLinkClassName="page-link"
+                      nextClassName="page-item"
+                      nextLinkClassName="page-link"
+                      breakLabel="..."
+                      breakClassName="page-item"
+                      breakLinkClassName="page-link"
+                      containerClassName="pagination"
+                      activeClassName="active"
+                    />
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
-
-      {/* <div className="asset__pagination"> */}
-      <ReactPaginate
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={1}
-        marginPagesDisplayed={2}
-        pageCount={totalPage}
-        previousLabel="< previous"
-        pageClassName="page-item"
-        pageLinkClassName="page-link"
-        previousClassName="page-item"
-        previousLinkClassName="page-link"
-        nextClassName="page-item"
-        nextLinkClassName="page-link"
-        breakLabel="..."
-        breakClassName="page-item"
-        breakLinkClassName="page-link"
-        containerClassName="pagination"
-        activeClassName="active"
-      />
     </div>
-    // </div>
   );
 };
 

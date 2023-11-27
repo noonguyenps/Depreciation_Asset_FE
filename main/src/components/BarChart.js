@@ -33,12 +33,7 @@ const BarChart = () => {
     },
   };
 
-  return (
-    <div>
-      <h2>Biểu đồ cột</h2>
-      <Bar data={data} options={options} />
-    </div>
-  );
+  return <Bar data={data} options={options} />;
 };
 
 export default BarChart;

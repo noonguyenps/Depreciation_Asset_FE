@@ -3,18 +3,23 @@
 body {
   font-family: "Poppins", sans-serif;
   background-color: #f6f9fe;
+  position: relative;
 }
 .depri-container {
-  width: 100%;
+  max-width: 1400px;
   padding: 20px 15px;
   margin: 0 auto;
+
   .content-top {
+    margin-bottom: 20px;
     &__header {
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
     &__title h2 {
       margin-bottom: 0;
+      line-height: 1;
     }
 
     &__button {
@@ -26,7 +31,6 @@ body {
     }
     &__filter {
       align-items: center;
-      margin-bottom: 30px;
       // margin-left: 30px;
 
       .search-box {
@@ -51,14 +55,18 @@ body {
         }
       }
     }
-
+    &__option {
+      display: flex;
+      .button-view {
+        border: none;
+        background-color: #2795cf;
+        color: white;
+      }
+    }
     .option-sellect {
       border: 1px solid #c4c4c4;
-      border-radius: 5px;
-      background-color: #fff;
+
       padding: 3px 5px;
-      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.1);
-      margin-left: 10px;
     }
   }
   .content-sellection {
@@ -131,74 +139,88 @@ body {
       }
     }
   }
-}
-.depri-content__detail {
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  border-radius: 10px;
-  overflow: hidden;
+  .depri-content__detail {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 10px;
+    overflow: hidden;
 
-  .table-container {
-    max-width: 100%;
-    overflow-x: auto;
+    .table-container {
+      overflow-x: auto;
+      position: relative;
+      max-width: 1300px;
 
-    position: relative;
+      table {
+        border-collapse: collapse;
+        max-width: 1300px;
+        margin: 0 auto;
+        white-space: nowrap; /* Đảm bảo không bị xuống dòng */
+      }
 
-    table {
-      border-collapse: collapse;
-      max-width: 1400px;
-      margin: 0 auto;
+      th {
+        color: #141a4e;
+        background-color: #e1e8f2;
+      }
+      .stick-header {
+        background-color: #f6f9fd;
+        position: sticky;
+        left: 0;
+        z-index: 1;
+      }
+      .stick {
+        background-color: #e1e8f2;
 
-      white-space: nowrap; /* Đảm bảo không bị xuống dòng */
-    }
+        position: sticky;
+        left: 0;
+        z-index: 1;
+      }
+      td {
+        max-width: 200px; /* Set the desired max-width */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
-    th {
-      color: #141a4e;
-      background-color: #e1e8f2;
-    }
-    td {
-      max-width: 200px; /* Set the desired max-width */
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+      tbody tr td {
+        border-bottom: 1px solid #eeeeee;
+        padding-top: 15px;
+        padding-bottom: 15px;
+      }
+      tbody tr td:nth-child(1) {
+        color: #2e98d1;
+        font-weight: 500;
+        text-align: left;
+      }
+      th:nth-child(2) {
+        width: 150px;
+      }
+      th,
+      td {
+        padding: 8px 35px 8px 30px;
 
-    tbody tr td {
-      border-bottom: 1px solid #eeeeee;
-      padding-top: 15px;
-      padding-bottom: 15px;
-    }
-    tbody tr td:nth-child(2) {
-      color: #2e98d1;
-    }
-    th:nth-child(2) {
-      width: 150px;
-    }
-    th,
-    td {
-      padding: 8px;
-      text-align: left;
-    }
+        text-align: center;
+      }
 
-    tr:hover {
-      background-color: #f5f5f5;
+      tr:hover {
+        background-color: #f5f5f5;
+      }
     }
   }
 }
 
 .paging {
   width: 100%;
-  text-align: end !important;
-  padding: 20px 20px;
-
+  padding: 30px 30px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
   div {
     width: fit-content;
-    margin-left: auto;
     margin-right: 20px;
   }
   .pagination {
     display: flex;
     margin: 0;
-    justify-content: end; /* Center the pagination */
+    justify-content: end;
     gap: 10px; /* Set the gap between page items */
   }
 
@@ -262,18 +284,5 @@ body {
         }
       }
     }
-  }
-}
-
-@media (max-width: 600px) {
-  table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  th,
-  td {
-    display: inline-block;
   }
 }

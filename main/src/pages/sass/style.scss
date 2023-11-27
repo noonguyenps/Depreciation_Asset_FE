@@ -10,12 +10,20 @@
 body {
   font-family: "Poppins", sans-serif;
 }
+.asset__contain {
+  max-width: 1400px;
+  padding: 20px 15px;
+  h2 {
+    margin-bottom: 20px;
+  }
+}
 .contain {
+  max-width: 1400px;
   display: flex;
   gap: 20px;
 }
 .main {
-  flex-grow: 1;
+  width: 1300px;
   transition: margin-left 0.3s ease;
 }
 
@@ -90,4 +98,94 @@ body {
 }
 .menu-section {
   padding: 20px 15px;
+}
+.asset__detail {
+  padding: 20px 15px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  .asset-image {
+    justify-content: center;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+
+    .image-container {
+      width: 100%; /* Kích thước ảnh mong muốn */
+      height: 400px; /* Kích thước ảnh mong muốn */
+      overflow: hidden;
+      position: relative;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    .image-border {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      border: 2px dashed #ccc; /* Màu và độ dày của viền */
+    }
+  }
+  .asset-info {
+    width: 100%;
+    display: flex;
+    gap: 15px;
+    &__input {
+      width: 100%;
+    }
+  }
+  .asset-item {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+  }
+  label {
+    margin-bottom: 10px;
+  }
+
+  input {
+    width: 100%;
+    border: 1px solid #c4c4c4;
+    border-radius: 5px;
+    background-color: #fff;
+    padding: 3px 5px;
+  }
+}
+.pie-chart {
+  width: 40%;
+  height: 100%;
+}
+.bar-chart {
+  width: 60%;
+}
+.horizone-chart {
+  width: 60%;
+}
+.asset__chart {
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  .chart {
+    color: #707070;
+    padding: 20px 20px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 10px;
+  }
+  .chart-title {
+    margin-bottom: 20px;
+  }
+  .chart-top,
+  .chart-bottom {
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa các biểu đồ */
+  }
+  .chart-top > div,
+  .chart-bottom > div {
+    flex: 1; /* Mỗi biểu đồ sẽ chiếm toàn bộ chiều rộng */
+  }
 }

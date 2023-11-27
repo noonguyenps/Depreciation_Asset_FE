@@ -4,23 +4,51 @@ import Loading from "../components/loading";
 import ReactPaginate from "react-paginate";
 
 const Depriciation = () => {
-  const [currentPage, setCurrentPage] = useState(0);
+  const [depriData, setDepriData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const [assetsPerPage, setAssetsPerPage] = useState(5);
   const [totalPage, setTotalPage] = useState(0);
   // Dữ liệu mẫu
   const [viewMode, setViewMode] = useState("year");
   const [viewYear, setViewYear] = useState(2023);
-  const [viewMonth, setViewMonth] = useState(1);
+  const [viewMonth, setViewMonth] = useState(10);
+
+  useEffect(() => {
+    let timer = null;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/depreciation/history?month=${viewMonth}&year=2023`
+        );
+
+        const data = await response.json();
+        console.log("data", data);
+        // setTotalPage(data.data.totalPage);
+        setDepriData(data);
+        console.log("viewMonth", viewMonth);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [currentPage, viewMonth]);
 
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
 
-    // Nếu chọn chế độ "view theo năm", tự động tắt chức năng "view theo tháng"
     if (mode === "year") {
       setViewMonth(1);
     }
+  };
+  const handleClick = () => {
+    // Simulate a click and change the value
+    const nextViewMode = viewMode === "year" ? "month" : "year";
+    handleViewModeChange(nextViewMode);
   };
 
   const handleYearChange = (year) => {
@@ -29,6 +57,14 @@ const Depriciation = () => {
 
   const handleMonthChange = (month) => {
     setViewMonth(month);
+  };
+  const formatNumber = (number) => {
+    return number
+      ? number.toLocaleString("en-US", {
+          minimumFractionDigits: 3,
+          maximumFractionDigits: 3,
+        })
+      : 0;
   };
 
   const monthlyColumns = [
@@ -47,86 +83,15 @@ const Depriciation = () => {
     <th key="14">Tháng 4</th>,
     <th key="15">Tháng 5</th>,
     <th key="16">Tháng 6</th>,
+    <th key="17">Tháng 7</th>,
+    <th key="18">Tháng 8</th>,
+    <th key="19">Tháng 9</th>,
+    <th key="20">Tháng 10</th>,
+    <th key="21">Tháng 11</th>,
+    <th key="22">Tháng 12</th>,
     // Thêm các tháng khác tùy thuộc vào nhu cầu
   ];
-  const data = [
-    {
-      taiSan: "Tài sản 1",
-      maTaiSan: "TS001",
-      ngayPhanBo: "01/01/2022",
-      nguyenGia: 100000000, // Đơn vị VND
-      soThangTrikhauHao: 36,
-      bienDongNguyenGia: 5000000, // Đơn vị VND
-      mucTrikhauHaoThang: 5000000, // Đơn vị VND
-      soNgayTrongThang: 30,
-      soNgayTinhKH: 30,
-      luyKeKyTruoc: 150000000, // Đơn vị VND
-      luyKeKyNay: 200000000, // Đơn vị VND
-      luyKe: 200000000, // Đơn vị VND
-      giaTriConLai: 80000000, // Đơn vị VND
-    },
-    {
-      taiSan: "Tài sản 2",
-      maTaiSan: "TS002",
-      ngayPhanBo: "01/02/2022",
-      nguyenGia: 80000000, // Đơn vị VND
-      soThangTrikhauHao: 24,
-      bienDongNguyenGia: 4000000, // Đơn vị VND
-      mucTrikhauHaoThang: 4000000, // Đơn vị VND
-      soNgayTrongThang: 30,
-      soNgayTinhKH: 30,
-      luyKeKyTruoc: 100000000, // Đơn vị VND
-      luyKeKyNay: 120000000, // Đơn vị VND
-      luyKe: 120000000, // Đơn vị VND
-      giaTriConLai: 20000000, // Đơn vị VND
-    },
-    {
-      taiSan: "Tài sản 2",
-      maTaiSan: "TS002",
-      ngayPhanBo: "01/02/2022",
-      nguyenGia: 80000000, // Đơn vị VND
-      soThangTrikhauHao: 24,
-      bienDongNguyenGia: 4000000, // Đơn vị VND
-      mucTrikhauHaoThang: 4000000, // Đơn vị VND
-      soNgayTrongThang: 30,
-      soNgayTinhKH: 30,
-      luyKeKyTruoc: 100000000, // Đơn vị VND
-      luyKeKyNay: 120000000, // Đơn vị VND
-      luyKe: 120000000, // Đơn vị VND
-      giaTriConLai: 20000000, // Đơn vị VND
-    },
-    {
-      taiSan: "Tài sản 2",
-      maTaiSan: "TS002",
-      ngayPhanBo: "01/02/2022",
-      nguyenGia: 80000000, // Đơn vị VND
-      soThangTrikhauHao: 24,
-      bienDongNguyenGia: 4000000, // Đơn vị VND
-      mucTrikhauHaoThang: 4000000, // Đơn vị VND
-      soNgayTrongThang: 30,
-      soNgayTinhKH: 30,
-      luyKeKyTruoc: 100000000, // Đơn vị VND
-      luyKeKyNay: 120000000, // Đơn vị VND
-      luyKe: 120000000, // Đơn vị VND
-      giaTriConLai: 20000000, // Đơn vị VND
-    },
-    {
-      taiSan: "Tài sản 2",
-      maTaiSan: "TS002",
-      ngayPhanBo: "01/02/2022",
-      nguyenGia: 80000000, // Đơn vị VND
-      soThangTrikhauHao: 24,
-      bienDongNguyenGia: 4000000, // Đơn vị VND
-      mucTrikhauHaoThang: 4000000, // Đơn vị VND
-      soNgayTrongThang: 30,
-      soNgayTinhKH: 30,
-      luyKeKyTruoc: 100000000, // Đơn vị VND
-      luyKeKyNay: 120000000, // Đơn vị VND
-      luyKe: 120000000, // Đơn vị VND
-      giaTriConLai: 20000000, // Đơn vị VND
-    },
-    // Thêm dữ liệu mẫu cho các tài sản khác
-  ];
+
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
@@ -166,45 +131,56 @@ const Depriciation = () => {
             </div>
           </div>
           <div className="content-top__option">
-            <label>Chọn chế độ xem:</label>
-            <select
+            <button
               value={viewMode}
               onChange={(e) => handleViewModeChange(e.target.value)}
-              className="option-sellect"
-              style={{ width: "100px" }}
+              className="button-view"
+              onClick={handleClick}
+              style={{ width: "170px" }}
             >
-              <option value="year">Theo năm</option>
-              <option value="month">Theo tháng</option>
-            </select>
+              Trích khấu hao
+            </button>
+            <div>
+              {viewMode === "year" && (
+                <div>
+                  <select
+                    value={viewYear}
+                    onChange={(e) => handleYearChange(e.target.value)}
+                    className="option-sellect"
+                    style={{ width: "70px" }}
+                  >
+                    <option value={2023}>2023</option>
+                    <option value={2024}>2024</option>
+                    {/* Thêm các năm khác tùy thuộc vào nhu cầu */}
+                  </select>
+                </div>
+              )}
+              {viewMode === "month" && (
+                <div>
+                  <select
+                    value={viewMonth}
+                    onChange={(e) => handleMonthChange(e.target.value)}
+                    className="option-sellect"
+                  >
+                    <option value={1}>Tháng 1</option>
+                    <option value={2}>Tháng 2</option>
+                    <option value={3}>Tháng 3</option>
+                    <option value={4}>Tháng 4</option>
+                    <option value={5}>Tháng 5</option>
+                    <option value={6}>Tháng 6</option>
+                    <option value={7}>Tháng 7</option>
+                    <option value={8}>Tháng 8</option>
+                    <option value={9}>Tháng 9</option>
+                    <option value={10}>Tháng 10</option>
+                    <option value={11}>Tháng 11</option>
+                    <option value={11}>Tháng 12</option>
+
+                    {/* Thêm các tháng khác tùy thuộc vào nhu cầu */}
+                  </select>
+                </div>
+              )}
+            </div>
           </div>
-          {viewMode === "year" && (
-            <div>
-              <label>Chọn năm:</label>
-              <select
-                value={viewYear}
-                onChange={(e) => handleYearChange(e.target.value)}
-                className="option-sellect"
-                style={{ width: "70px" }}
-              >
-                <option value={2023}>2023</option>
-                <option value={2024}>2024</option>
-                {/* Thêm các năm khác tùy thuộc vào nhu cầu */}
-              </select>
-            </div>
-          )}
-          {viewMode === "month" && (
-            <div>
-              <label>Chọn tháng:</label>
-              <select
-                value={viewMonth}
-                onChange={(e) => handleMonthChange(e.target.value)}
-              >
-                <option value={1}>Tháng 1</option>
-                <option value={2}>Tháng 2</option>
-                {/* Thêm các tháng khác tùy thuộc vào nhu cầu */}
-              </select>
-            </div>
-          )}
         </div>
       </div>
 
@@ -213,7 +189,7 @@ const Depriciation = () => {
           <table>
             <thead>
               <tr>
-                <th>Tài sản</th>
+                <th className="stick">Tài sản</th>
                 <th>Mã tài sản</th>
                 <th>Ngày phân bổ</th>
                 <th>Nguyên giá</th>
@@ -222,53 +198,76 @@ const Depriciation = () => {
                 <th>Mức trích khấu hao tháng</th>
                 <th>Số ngày trong tháng</th>
                 <th>Số ngày tính KH</th>
-                {viewMode === "monthly" ? monthlyColumns : yearlyColumns}
+                {viewMode === "month" ? monthlyColumns : yearlyColumns}
               </tr>
             </thead>
 
             <tbody>
-              {data.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.taiSan}</td>
-                  <td>{item.maTaiSan}</td>
-                  <td>{item.ngayPhanBo}</td>
-                  <td>{item.nguyenGia}</td>
-                  <td>{item.soThangTrikhauHao}</td>
-                  <td>{item.bienDongNguyenGia}</td>
-                  <td>{item.mucTrikhauHaoThang}</td>
-                  <td>{item.soNgayTrongThang}</td>
-                  <td>{item.soNgayTinhKH}</td>
-                  <td>{item.luyKeKyTruoc}</td>
-                  <td>{item.luyKeKyNay}</td>
-                  <td>{item.luyKe}</td>
-                  <td>{item.giaTriConLai}</td>
-                </tr>
-              ))}
+              {depriData &&
+                depriData.map((item, index) => (
+                  <tr key={index}>
+                    <td className="stick-header">{item.assetName}</td>
+                    <td>{item.serialNumber}</td>
+                    <td>{item.fromDate}</td>
+                    <td>{formatNumber(item.price)}</td>
+                    <td>{formatNumber(item.amountMonth)}</td>
+                    <td>{item?.dateUpdatePrice ? "0" : "1"}</td>
+                    <td>{item.valuePerMonth}</td>
+                    <td>{item.amountDayOfMonth}</td>
+                    <td>{item?.amountDateDepreciation}</td>
+                    {viewMode === "month" && (
+                      <>
+                        <td>{formatNumber(item.accumulatedPrev)}</td>
+                        <td>{formatNumber(item.accumulatedPresent)}</td>
+                        <td>{formatNumber(item.accumulated)}</td>
+                        <td>{formatNumber(item.valuePresent)}</td>
+                      </>
+                    )}
+                    {viewMode === "year" && (
+                      <>
+                        <td>{formatNumber(item.accumulatedYearPrev)}</td>
+                        <td>{formatNumber(item.accumulatedPresentPrev)}</td>
+                        <td>{formatNumber(item.months[1])}</td>
+                        <td>{formatNumber(item.months[2])}</td>
+                        <td>{formatNumber(item.months[3])}</td>
+                        <td>{formatNumber(item.months[4])}</td>
+                        <td>{formatNumber(item.months[5])}</td>
+                        <td>{formatNumber(item.months[6])}</td>
+                        <td>{formatNumber(item.months[7])}</td>
+                        <td>{formatNumber(item.months[8])}</td>
+                        <td>{formatNumber(item.months[9])}</td>
+                        <td>{formatNumber(item.months[10])}</td>
+                        <td>{formatNumber(item.months[11])}</td>
+                        <td>{formatNumber(item.months[12])}</td>
+                      </>
+                    )}{" "}
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
-        <div className="paging">
-          {" "}
-          <ReactPaginate
-            nextLabel=">"
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={1}
-            marginPagesDisplayed={2}
-            pageCount="7"
-            previousLabel="<"
-            pageClassName="page-item"
-            pageLinkClassName="page-link"
-            previousClassName="page-item"
-            previousLinkClassName="page-link"
-            nextClassName="page-item"
-            nextLinkClassName="page-link"
-            breakLabel="..."
-            breakClassName="page-item"
-            breakLinkClassName="page-link"
-            containerClassName="pagination"
-            activeClassName="active"
-          />
-        </div>
+      </div>
+      <div className="paging">
+        {" "}
+        <ReactPaginate
+          nextLabel=">"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={1}
+          marginPagesDisplayed={2}
+          pageCount="7"
+          previousLabel="<"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakLabel="..."
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+        />
       </div>
     </div>
   );

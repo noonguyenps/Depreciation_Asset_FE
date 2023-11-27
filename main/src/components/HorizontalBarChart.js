@@ -45,12 +45,7 @@ const HorizontalBarChart = () => {
     },
   };
 
-  return (
-    <div>
-      <h2>Biểu đồ cột nằm ngang</h2>
-      <HorizontalBar data={data} options={options} />
-    </div>
-  );
+  return <HorizontalBar data={data} options={options} />;
 };
 
 export default HorizontalBarChart;

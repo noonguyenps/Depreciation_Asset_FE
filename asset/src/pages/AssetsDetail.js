@@ -103,6 +103,7 @@ const AssetsDetail = () => {
 
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
+    console.log("selectedValue", selectedValue);
   };
 
   const handleUserChange = (e) => {
@@ -309,8 +310,11 @@ const AssetsDetail = () => {
                         >
                           <option value="all">Tất cả</option>
                           {!loading &&
-                            assetData?.data.assets.map((asset, key) => (
-                              <option key={asset.assetId}>
+                            assetData?.data.assets.map((asset) => (
+                              <option
+                                key={asset.assetId}
+                                value={asset.assetTypeName}
+                              >
                                 {asset.assetTypeName}
                               </option>
                             ))}
@@ -343,7 +347,7 @@ const AssetsDetail = () => {
                           {!loading &&
                             assetData?.data.assets.map((asset, key) => (
                               <option key={asset.assetId}>
-                                {asset.user.dept.name}
+                                {asset?.user?.dept?.name}
                               </option>
                             ))}
                         </select>
@@ -397,7 +401,9 @@ const AssetsDetail = () => {
                       <input type="checkbox" />
                     </td>
                     <td>{asset.assetName}</td>
-                    <td style={{ fontWeight: "600" }}>{asset.user.fullName}</td>
+                    <td style={{ fontWeight: "600" }}>
+                      {asset?.user?.fullName}
+                    </td>
                     <td>{asset.assetTypeName}</td>
                     <td>{asset.assetGroup || "Sản xuất"}</td>
                     <td>{asset.dateInStored}</td>

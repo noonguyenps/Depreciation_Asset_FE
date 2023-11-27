@@ -11,14 +11,13 @@ const PieChart = () => {
         hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50"],
       },
     ],
+    options: {
+      //  responsive: true,
+      maintainAspectRatio: false,
+    },
   };
 
-  return (
-    <div>
-      <h2>Biểu đồ tròn</h2>
-      <Doughnut data={data} />
-    </div>
-  );
+  return <Doughnut data={data} />;
 };
 
 export default PieChart;

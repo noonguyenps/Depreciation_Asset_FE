@@ -11,6 +11,8 @@ import {
 
 import { NavLink, useNavigate } from "react-router-dom";
 import "./sass/style.scss";
+import "./sass/reset.scss";
+
 import logo from "../components/assets/logo.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -59,6 +61,7 @@ const Sidebar = ({ children }) => {
 
   const toggleKhauHao = () => {
     setIsKhauHaoOpen(!isKhauHaoOpen);
+    setIsOpen(true);
   };
   return (
     <div className="contain">
@@ -107,18 +110,23 @@ const Sidebar = ({ children }) => {
                 </div>
               </NavLink>
               {item.subMenu && (
-                <div style={{ display: isKhauHaoOpen ? "block" : "none" }}>
+                <div
+                  style={{
+                    display: isKhauHaoOpen && isOpen ? "block" : "none",
+                  }}
+                >
                   {item.subMenu.map((subItem, subIndex) => (
                     <NavLink
                       key={subIndex}
                       to={subItem.path}
                       className={`link ${
-                        isKhauHaoOpen && subIndex === 0 ? "active" : ""
+                        isKhauHaoOpen && isOpen && subIndex === 0
+                          ? "active"
+                          : ""
                       }`}
                       activeClassName="active"
                     >
                       <div className="icon">{subItem.name}</div>
-                      {/* ... (additional styling for sub-menu) */}
                     </NavLink>
                   ))}
                 </div>

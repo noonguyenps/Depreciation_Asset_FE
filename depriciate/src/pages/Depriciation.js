@@ -13,7 +13,7 @@ const Depriciation = () => {
   // Dữ liệu mẫu
   const [viewMode, setViewMode] = useState("year");
   const [viewYear, setViewYear] = useState(2023);
-  const [viewMonth, setViewMonth] = useState(10);
+  const [viewMonth, setViewMonth] = useState(8);
 
   useEffect(() => {
     let timer = null;
@@ -147,7 +147,7 @@ const Depriciation = () => {
                     value={viewYear}
                     onChange={(e) => handleYearChange(e.target.value)}
                     className="option-sellect"
-                    style={{ width: "70px" }}
+                    style={{ width: "110px" }}
                   >
                     <option value={2023}>2023</option>
                     <option value={2024}>2024</option>
@@ -161,6 +161,7 @@ const Depriciation = () => {
                     value={viewMonth}
                     onChange={(e) => handleMonthChange(e.target.value)}
                     className="option-sellect"
+                    style={{ width: "110px" }}
                   >
                     <option value={1}>Tháng 1</option>
                     <option value={2}>Tháng 2</option>
@@ -211,7 +212,9 @@ const Depriciation = () => {
                     <td>{item.fromDate}</td>
                     <td>{formatNumber(item.price)}</td>
                     <td>{formatNumber(item.amountMonth)}</td>
-                    <td>{item?.dateUpdatePrice ? "0" : "1"}</td>
+                    <td>
+                      {item?.dateUpdatePrice ? item.dateUpdatePrice : "Không"}
+                    </td>
                     <td>{item.valuePerMonth}</td>
                     <td>{item.amountDayOfMonth}</td>
                     <td>{item?.amountDateDepreciation}</td>

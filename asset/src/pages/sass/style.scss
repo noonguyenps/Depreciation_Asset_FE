@@ -95,13 +95,14 @@ button {
   &-content__sellection {
     width: 100%;
     color: #707070;
-    padding: 20px 20px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     border-radius: 10px;
 
     .content-sellection__infor {
       display: flex;
       margin-bottom: 20px;
+      padding: 5px;
+
       .info {
         width: 33.33%;
         border-right: 1px solid #f0f0f0;
@@ -109,8 +110,12 @@ button {
         align-items: center;
         justify-content: center;
         gap: 20px;
+        &-title {
+          margin-bottom: 5px;
+        }
         &-number {
           color: #333333;
+          font-size: 14px;
           font-weight: 600;
         }
         &-change {
@@ -134,9 +139,10 @@ button {
       // overflow-x: auto;
       max-width: 100%;
       margin-top: 20px;
+
       .content-sellection {
         display: flex;
-        gap: 10px;
+        gap: 20px;
         .content-sellection__state {
           span {
             color: #141a4e;
@@ -183,7 +189,7 @@ button {
           }
           .sellection-date {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             .date {
               display: flex;
               color: #141a4e;
@@ -234,6 +240,7 @@ button {
       width: 100%;
       box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
       border-radius: 10px;
+
       overflow: hidden; /* Ensure that rounded corners are applied */
     }
 

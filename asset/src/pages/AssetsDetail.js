@@ -28,7 +28,12 @@ const AssetsDetail = () => {
   const userDebounce = useDebounce(userId, 500);
 
   //typeAsset
-  const [selectedValue, setSelectedValue] = useState("all"); // 'all' or some default value
+  const [assetType, setAssetType] = useState([]);
+  const [selectedValue, setSelectedValue] = useState(-1); // 'all' or some default value
+
+  //depart
+  const [department, setDepartment] = useState("");
+  const [selectedDeptValue, setSelectedDeptValue] = useState(-1); // 'all' or some default value
 
   useEffect(() => {
     let timer = null;
@@ -36,7 +41,7 @@ const AssetsDetail = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/asset/filter?page=${currentPage}&size=${assetsPerPage}&date?fromDate=${fromDate}&toDate=${toDate}&user=${userId}`
+          `http://localhost:8080/api/asset/filter?page=${currentPage}&size=${assetsPerPage}&date?fromDate=${fromDate}&toDate=${toDate}&user=${userId}&assetType=${selectedValue}&dept=${selectedDeptValue}`
         );
 
         const data = await response.json();
@@ -51,7 +56,57 @@ const AssetsDetail = () => {
     };
 
     fetchData();
-  }, [currentPage, fromDateDebounce, toDateDebounce, userDebounce]);
+  }, [
+    currentPage,
+    fromDateDebounce,
+    toDateDebounce,
+    userDebounce,
+    selectedValue,
+    selectedDeptValue,
+  ]);
+
+  useEffect(() => {
+    let timer = null;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/asset/type`);
+
+        const data = await response.json();
+        console.log("AssetType", data);
+        // setTotalPage(data.data.totalPage);
+        setAssetType(data);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    let timer = null;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/user/department`
+        );
+
+        const data = await response.json();
+        console.log("depart", data);
+        // setTotalPage(data.data.totalPage);
+        setDepartment(data);
+
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -145,7 +200,8 @@ const AssetsDetail = () => {
             </div>
           </div>
         </div>
-        <div className="content-top__button">
+
+        {/* <div className="content-top__button">
           <div className="asset-content__addMore">
             <img src={addIcon} alt="" />
             <span>Thêm tài sản</span>
@@ -166,12 +222,11 @@ const AssetsDetail = () => {
             {excelData && (
               <div>
                 <h2>Imported Excel Data</h2>
-                {/* Display your data here */}
                 <pre>{JSON.stringify(excelData, null, 2)}</pre>
               </div>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="asset-content__sellection">
@@ -204,8 +259,8 @@ const AssetsDetail = () => {
           <div className="info">
             <img src={assetInfo} alt="" />
             <div>
-              <p className="info-title">Tổng cộng tài sản</p>
-              <h2 className="info-number">1,250</h2>
+              <p className="info-title">Chi phí khâu hao</p>
+              <h2 className="info-number">5,150,000</h2>
               <div className="info-change">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -221,7 +276,7 @@ const AssetsDetail = () => {
                     d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
                   />
                 </svg>
-                <span className="info-change__color">16%</span>
+                <span className="info-change__color">100%</span>
                 <span>tháng này</span>
               </div>
             </div>
@@ -229,8 +284,8 @@ const AssetsDetail = () => {
           <div className="info">
             <img src={assetInfo} alt="" />
             <div>
-              <p className="info-title">Tổng cộng tài sản</p>
-              <h2 className="info-number">1,250</h2>
+              <p className="info-title">Nhân viên</p>
+              <h2 className="info-number">50</h2>
               <div className="info-change">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -246,7 +301,7 @@ const AssetsDetail = () => {
                     d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
                   />
                 </svg>
-                <span className="info-change__color">16%</span>
+                <span className="info-change__color">100%</span>
                 <span>tháng này</span>
               </div>
             </div>
@@ -266,8 +321,7 @@ const AssetsDetail = () => {
                       <span>Nhóm tài sản</span>
                       <div className="state-dropdown">
                         <select
-                          value={selectedValue}
-                          onChange={handleSelectChange}
+                          // value={selectedValue}
                           style={{ width: "100px" }}
                           className="select-dropdown"
                         >
@@ -305,17 +359,14 @@ const AssetsDetail = () => {
                       <div className="state-dropdown">
                         <select
                           value={selectedValue}
-                          onChange={handleSelectChange}
+                          onChange={(e) => setSelectedValue(e.target.value)}
                           style={{ width: "100px" }}
                         >
                           <option value="all">Tất cả</option>
                           {!loading &&
-                            assetData?.data.assets.map((asset) => (
-                              <option
-                                key={asset.assetId}
-                                value={asset.assetTypeName}
-                              >
-                                {asset.assetTypeName}
+                            assetType?.map((asset) => (
+                              <option key={asset.id} value={asset.id}>
+                                {asset.assetName}
                               </option>
                             ))}
                         </select>
@@ -336,20 +387,22 @@ const AssetsDetail = () => {
                       </div>
                     </div>
                     <div className="content-sellection__state">
-                      <span>Kho hàng:</span>
+                      <span>Phòng Ban:</span>
                       <div className="state-dropdown">
                         <select
-                          value={selectedValue}
-                          onChange={handleSelectChange}
+                          value={selectedDeptValue}
+                          onChange={(e) => setSelectedDeptValue(e.target.value)}
                           style={{ width: "100px" }}
                         >
-                          <option value="all">Tất cả</option>
+                          <option value="-1">Tất cả</option>
                           {!loading &&
-                            assetData?.data.assets.map((asset, key) => (
-                              <option key={asset.assetId}>
-                                {asset?.user?.dept?.name}
-                              </option>
-                            ))}
+                            department?.data.listDepartment.map(
+                              (asset, key) => (
+                                <option key={asset.id} value={asset.id}>
+                                  {asset?.name}
+                                </option>
+                              )
+                            )}
                         </select>
                       </div>
                     </div>

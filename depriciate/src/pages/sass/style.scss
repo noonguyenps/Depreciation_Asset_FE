@@ -15,11 +15,13 @@ body {
     &__header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
     }
-    &__title h2 {
-      margin-bottom: 0;
-      line-height: 1;
+    &__title {
+      display: flex;
+      h2 {
+        margin-bottom: 0;
+        line-height: 1;
+      }
     }
 
     &__button {
@@ -179,17 +181,17 @@ body {
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      .main-row td {
+        color: #2e98d1;
+        font-weight: 500;
+      }
 
       tbody tr td {
         border-bottom: 1px solid #eeeeee;
         padding-top: 15px;
         padding-bottom: 15px;
       }
-      tbody tr td:nth-child(1) {
-        color: #2e98d1;
-        font-weight: 500;
-        text-align: left;
-      }
+
       th:nth-child(2) {
         width: 150px;
       }

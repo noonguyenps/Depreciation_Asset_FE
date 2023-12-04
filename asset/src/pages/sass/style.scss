@@ -34,8 +34,10 @@ button {
       &__header {
         display: flex;
         justify-content: space-between;
+        margin-bottom: 10px;
       }
       &__title h2 {
+        line-height: 1;
         margin-bottom: 0;
       }
 
@@ -48,7 +50,6 @@ button {
       }
       &__filter {
         align-items: center;
-        margin-bottom: 30px;
         // margin-left: 30px;
 
         .search-box {
@@ -145,8 +146,9 @@ button {
         gap: 20px;
         .content-sellection__state {
           span {
-            color: #141a4e;
-            font-weight: 500;
+            color: #159712;
+            font-weight: 300;
+            font-size: 12px;
           }
           svg {
             width: 30px;
@@ -190,15 +192,19 @@ button {
           .sellection-date {
             display: flex;
             gap: 20px;
+            height: 100%;
             .date {
+              color: #159712;
               display: flex;
-              color: #141a4e;
               flex-direction: column;
-              label {
-                margin-bottom: 5px;
-                font-weight: 500;
+              justify-content: end;
+              span {
+                font-size: 12px;
+                font-weight: 300;
               }
               input {
+                margin-top: 5px;
+                height: 24.5;
                 border: 1px solid #c4c4c4;
                 border-radius: 5px;
                 background-color: #fff;

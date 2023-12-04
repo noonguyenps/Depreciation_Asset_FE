@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   IoIosHome,
   FaBars,
@@ -8,8 +8,9 @@ import {
   FaShoppingBag,
   FaThList,
 } from "react-icons/fa";
+import { useParams } from "react-router-dom"; // Import useParams
 
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./sass/style.scss";
 import "./sass/reset.scss";
 
@@ -22,13 +23,18 @@ import {
   faCalculator,
 } from "@fortawesome/free-solid-svg-icons";
 import Charts from "./Charts";
+import IdContext from "../context/context";
 const Depriciation = React.lazy(() => import("depriciation/Depriciation"));
 
 const Sidebar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isKhauHaoOpen, setIsKhauHaoOpen] = useState(false);
-  const navigate = useNavigate();
-
+  const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
+  const [activeSubMenuId, setActiveSubMenuId] = useState(null); // State to track active submenu item
+  const [dynamicTo, setDynamicTo] = useState("");
+  const location = useLocation();
+  const [currentAssetId, setCurrentAssetId] = useState();
+  const { id } = useParams();
+  console.log("id", id);
   const menuItem = [
     {
       path: "/",
@@ -36,45 +42,61 @@ const Sidebar = ({ children }) => {
       icon: <FontAwesomeIcon icon={faHouse} />,
     },
     {
-      path: "/asset",
+      id: 1,
+      path: "/asset/details",
       name: "Tài sản",
       icon: <FontAwesomeIcon icon={faBoxOpen} />,
-    },
-    {
-      path: "/depriciation",
-      name: "Khấu hao",
-      icon: <FontAwesomeIcon icon={faCalculator} />,
       subMenu: [
         {
-          path: "/depriciation",
-          name: "Bảng tính",
+          id: 1,
+          path: "/asset/details",
+          name: "Thông tin chung",
         },
         {
-          path: "/depriciation/charts",
-          name: "Biểu đồ",
+          id: 1,
+          path: "/asset/depreciation-info",
+          name: "Thông tin khấu hao",
         },
       ],
     },
+    {
+      path: "/depreciation",
+      name: "Khấu hao",
+      icon: <FontAwesomeIcon icon={faCalculator} />,
+    },
   ];
+  const handleNavLinkClick = (item) => {
+    item.subMenu ? setIsSubMenuOpen(true) : setIsSubMenuOpen(false);
+    if (item.path.startsWith("/asset")) {
+      const storedId = localStorage.getItem("currentAssetId");
+      const updatedAssetId = storedId
+        ? `${item.path}/${storedId}`.replace(/\s+/g, "")
+        : item.path;
+      setDynamicTo(updatedAssetId);
 
+      setActiveSubMenuId(item.id);
+    }
+  };
   const toggle = () => setIsOpen(!isOpen);
 
-  const toggleKhauHao = () => {
-    setIsKhauHaoOpen(!isKhauHaoOpen);
-    setIsOpen(true);
-  };
   return (
     <div className="contain">
-      <div style={{ width: isOpen ? "200px" : "65px" }} className="sidebar">
-        <div className="top_section">
-          <img
-            style={{ display: isOpen ? "block" : "none" }}
-            src={logo}
-            alt=""
-          />
-          <h1 style={{ display: isOpen ? "block" : "none" }} className="logo">
-            Tài sản
-          </h1>
+      <div style={{ width: isOpen ? "250px" : "65px" }} className="sidebar">
+        <div className={isOpen ? "top_section-active" : "top_section"}>
+          <div className="logo">
+            <img
+              style={{ display: isOpen ? "block" : "none" }}
+              src={logo}
+              alt=""
+            />
+            <h1
+              style={{ display: isOpen ? "block" : "none" }}
+              className="logo-title"
+            >
+              Tài sản
+            </h1>
+          </div>
+
           <div
             style={{ marginLeft: isOpen ? "30px" : "0px" }}
             className="bars"
@@ -91,48 +113,109 @@ const Sidebar = ({ children }) => {
           </div>
         </div>
         <div className="menu-section">
-          {menuItem.map((item, index) => (
-            <div key={index}>
-              <NavLink
-                to={item.path}
-                className="link"
-                activeClassName="active"
-                onClick={() =>
-                  item.subMenu ? toggleKhauHao() : setIsKhauHaoOpen(false)
-                }
-              >
-                <div className="icon">{item.icon}</div>
-                <div
-                  style={{ display: isOpen ? "block" : "none" }}
-                  className="link_text"
+          {menuItem.map((item, index) => {
+            {
+              /* const activeDisable = !isActive && item.path.startsWith("/asset"); */
+            }
+            return (
+              <div key={index}>
+                <NavLink
+                  to={
+                    dynamicTo && item.path == "/asset/details"
+                      ? dynamicTo
+                      : item.path
+                  }
+                  className={({ isActive }) =>
+                    isActive || (isSubMenuOpen && activeSubMenuId === item.id)
+                      ? "navbar-item active1 link link-parent"
+                      : "navbar-item link link-parent"
+                  }
+                  onClick={() => handleNavLinkClick(item)}
+                  disabled="disabled"
                 >
-                  {item.name}
-                </div>
-              </NavLink>
-              {item.subMenu && (
-                <div
-                  style={{
-                    display: isKhauHaoOpen && isOpen ? "block" : "none",
-                  }}
-                >
-                  {item.subMenu.map((subItem, subIndex) => (
-                    <NavLink
-                      key={subIndex}
-                      to={subItem.path}
-                      className={`link ${
-                        isKhauHaoOpen && isOpen && subIndex === 0
-                          ? "active"
-                          : ""
-                      }`}
-                      activeClassName="active"
+                  <div className="icon">{item.icon}</div>
+                  <div
+                    style={{ display: isOpen ? "block" : "none" }}
+                    className="link_text "
+                  >
+                    {item.name}
+                  </div>
+                </NavLink>
+
+                {item.subMenu && (
+                  <div
+                    style={{
+                      display: isSubMenuOpen && isOpen ? "block" : "none",
+                    }}
+                  >
+                    {item.subMenu.map((subItem, subIndex) => (
+                      <NavLink
+                        key={subIndex}
+                        to={
+                          dynamicTo && subItem.path.startsWith("/asset/details")
+                            ? dynamicTo
+                            : subItem.path
+                        }
+                        className="link link-subItem"
+                      >
+                        <div className="icon">{subItem.name}</div>
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+              /*{<div key={index}>
+                {activeDisable ? (
+                  <a>Link</a>
+                ) : (
+                  <NavLink
+                    to={
+                      dynamicTo && item.path == "/asset/details"
+                        ? dynamicTo
+                        : item.path
+                    }
+                    className={({ isActive }) =>
+                      isActive || (isSubMenuOpen && activeSubMenuId === item.id)
+                        ? "navbar-item active1 link link-parent"
+                        : "navbar-item link link-parent"
+                    }
+                    onClick={() => handleNavLinkClick(item)}
+                    disabled="disabled"
+                  >
+                    <div className="icon">{item.icon}</div>
+                    <div
+                      style={{ display: isOpen ? "block" : "none" }}
+                      className="link_text "
                     >
-                      <div className="icon">{subItem.name}</div>
-                    </NavLink>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+                      {item.name}
+                    </div>
+                  </NavLink>
+                )}
+
+                {item.subMenu && (
+                  <div
+                    style={{
+                      display: isSubMenuOpen && isOpen ? "block" : "none",
+                    }}
+                  >
+                    {item.subMenu.map((subItem, subIndex) => (
+                      <NavLink
+                        key={subIndex}
+                        to={
+                          dynamicTo && subItem.path.startsWith("/asset/details")
+                            ? dynamicTo
+                            : subItem.path
+                        }
+                        className="link link-subItem"
+                      >
+                        <div className="icon">{subItem.name}</div>
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div> }*/
+            );
+          })}
         </div>
       </div>
       <main className="main">{children}</main>

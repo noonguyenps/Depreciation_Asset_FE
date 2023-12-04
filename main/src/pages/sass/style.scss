@@ -18,39 +18,53 @@ body {
   }
 }
 .contain {
+  margin: 0 auto;
   max-width: 1400px;
   display: flex;
   gap: 20px;
 }
 .main {
-  width: 1300px;
+  flex: 1;
+  overflow: auto;
   transition: margin-left 0.3s ease;
 }
 
 .sidebar {
-  background: #fff;
   color: #fff;
   height: 100vh;
-  width: 200px;
+  width: 20%;
   transition: all 0.3s ease;
+  .top_section-active {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 15px;
+    margin-bottom: 20px;
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    img {
+      width: 30px;
+      height: 30px;
+    }
+    .logo-title {
+      font-size: 24px;
+      text-wrap: nowrap;
+      color: #000;
+      margin-bottom: 0;
+    }
+  }
   .top_section {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 20px 15px;
     margin-bottom: 20px;
-    img {
-      width: 30px;
-      height: 30px;
-    }
-    .logo {
-      font-size: 24px;
-      text-wrap: nowrap;
-      color: #000;
-      margin-bottom: 0;
-    }
-    .bars {
-      width: 30px;
+
+    .bars svg {
+      width: 15px;
       height: 30px;
       display: flex;
       align-items: center;
@@ -70,17 +84,23 @@ body {
     gap: 15px;
     margin-bottom: 15px;
   }
-  .link:hover {
-    background: #5932ea;
-    border-radius: 15px;
-    color: #fff;
+  .link-subItem {
+    padding-left: 23px;
+  }
+  .link-parent:hover {
+    background: #dddddd;
+    border-radius: 5px;
   }
   .active {
     background: #5932ea;
     color: #fff;
-    border-radius: 15px;
+    border-radius: 5px;
+  }
+  .active1 {
+    color: black;
   }
   .icon {
+    align-items: center;
     display: inline-flex;
     width: 15px;
     height: 15px;
@@ -97,7 +117,7 @@ body {
   }
 }
 .menu-section {
-  padding: 20px 15px;
+  padding: 15px 15px;
 }
 .asset__detail {
   padding: 20px 15px;
@@ -187,5 +207,41 @@ body {
   .chart-top > div,
   .chart-bottom > div {
     flex: 1; /* Mỗi biểu đồ sẽ chiếm toàn bộ chiều rộng */
+  }
+}
+.table-container {
+  max-width: 100%;
+  margin-top: 20px;
+  .table-parent {
+    border-collapse: collapse;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 10px;
+
+    overflow: hidden; /* Ensure that rounded corners are applied */
+    .header-table th {
+      color: #141a4e;
+      background-color: #e1e8f2;
+    }
+  }
+  .table-child {
+  }
+  td {
+    max-width: 200px; /* Set the desired max-width */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  th,
+  td {
+    padding: 8px;
+    text-align: left;
+  }
+
+  tr:hover {
+    background-color: #f5f5f5;
   }
 }

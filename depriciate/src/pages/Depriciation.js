@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./sass/style.scss";
-import Loading from "../components/loading";
+import React, { useEffect, useState } from "react";
+import { FaBoxOpen } from "react-icons/fa6";
 import ReactPaginate from "react-paginate";
+import "./sass/style.scss";
 
 const Depriciation = () => {
   const [depriData, setDepriData] = useState(null);
@@ -21,7 +21,7 @@ const Depriciation = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/depreciation/history?month=${viewMonth}&year=2023`
+          `http://localhost:8080/api/depreciation/dept/history?month=${viewMonth}&year=2023`
         );
 
         const data = await response.json();
@@ -68,27 +68,29 @@ const Depriciation = () => {
   };
 
   const monthlyColumns = [
-    <th key="9">Luỹ kế kỳ trước</th>,
-    <th key="10">Luỹ kế kỳ này</th>,
-    <th key="11">Luỹ kế</th>,
-    <th key="12">Giá trị còn lại</th>,
+    <th key="3">Mức trích KH tháng</th>,
+    <th key="4">Luỹ kế kỳ trước</th>,
+    <th key="5">Số KH kỳ này </th>,
+    <th key="6">Luỹ kế </th>,
+    <th key="7">Giá trị còn lại</th>,
   ];
 
   const yearlyColumns = [
-    <th key="9">Khấu hao luỹ kế đầu năm</th>,
-    <th key="10">Gía trị còn lại đầu năm</th>,
-    <th key="11">Tháng 1</th>,
-    <th key="12">Tháng 2</th>,
-    <th key="13">Tháng 3</th>,
-    <th key="14">Tháng 4</th>,
-    <th key="15">Tháng 5</th>,
-    <th key="16">Tháng 6</th>,
-    <th key="17">Tháng 7</th>,
-    <th key="18">Tháng 8</th>,
-    <th key="19">Tháng 9</th>,
-    <th key="20">Tháng 10</th>,
-    <th key="21">Tháng 11</th>,
-    <th key="22">Tháng 12</th>,
+    <th key="3">KH luỹ kế đầu năm</th>,
+    <th key="4">Giá trị còn lại đầu năm</th>,
+    <th key="5">Giá trị KH tháng 1 </th>,
+    <th key="6">Giá trị KH tháng 2 </th>,
+    <th key="7">Giá trị KH tháng 3 </th>,
+    <th key="8">Giá trị KH tháng 4 </th>,
+    <th key="9">Giá trị KH tháng 5 </th>,
+    <th key="10">Giá trị KH tháng 6 </th>,
+    <th key="11">Giá trị KH tháng 7 </th>,
+    <th key="12">Giá trị KH tháng 8 </th>,
+    <th key="13">Giá trị KH tháng 9 </th>,
+    <th key="14">Giá trị KH tháng 10 </th>,
+    <th key="15">Giá trị KH tháng 11 </th>,
+    <th key="16">Giá trị KH tháng 12 </th>,
+
     // Thêm các tháng khác tùy thuộc vào nhu cầu
   ];
 
@@ -101,6 +103,7 @@ const Depriciation = () => {
       <div className="content-top">
         <div className="content-top__header">
           <div className="content-top__title">
+            <FaBoxOpen />
             <h2>Bảng tính và phân bổ</h2>
           </div>
           <div className="content-top__filter">
@@ -149,8 +152,9 @@ const Depriciation = () => {
                     className="option-sellect"
                     style={{ width: "110px" }}
                   >
+                    {" "}
+                    <option value={2022}>2022</option>
                     <option value={2023}>2023</option>
-                    <option value={2024}>2024</option>
                     {/* Thêm các năm khác tùy thuộc vào nhu cầu */}
                   </select>
                 </div>
@@ -174,7 +178,6 @@ const Depriciation = () => {
                     <option value={9}>Tháng 9</option>
                     <option value={10}>Tháng 10</option>
                     <option value={11}>Tháng 11</option>
-                    <option value={11}>Tháng 12</option>
 
                     {/* Thêm các tháng khác tùy thuộc vào nhu cầu */}
                   </select>
@@ -191,44 +194,58 @@ const Depriciation = () => {
             <thead>
               <tr>
                 <th className="stick">Tài sản</th>
-                <th>Mã tài sản</th>
-                <th>Ngày phân bổ</th>
                 <th>Nguyên giá</th>
-                <th>Số tháng trích khấu hao</th>
-                <th>Biến động nguyên giá</th>
-                <th>Mức trích khấu hao tháng</th>
-                <th>Số ngày trong tháng</th>
-                <th>Số ngày tính KH</th>
                 {viewMode === "month" ? monthlyColumns : yearlyColumns}
               </tr>
             </thead>
 
             <tbody>
               {depriData &&
-                depriData.map((item, index) => (
-                  <tr key={index}>
-                    <td className="stick-header">{item.assetName}</td>
-                    <td>{item.serialNumber}</td>
-                    <td>{item.fromDate}</td>
-                    <td>{formatNumber(item.price)}</td>
-                    <td>{formatNumber(item.amountMonth)}</td>
-                    <td>
-                      {item?.dateUpdatePrice ? item.dateUpdatePrice : "Không"}
-                    </td>
-                    <td>{item.valuePerMonth}</td>
-                    <td>{item.amountDayOfMonth}</td>
-                    <td>{item?.amountDateDepreciation}</td>
-                    {viewMode === "month" && (
-                      <>
-                        <td>{formatNumber(item.accumulatedPrev)}</td>
-                        <td>{formatNumber(item.accumulatedPresent)}</td>
-                        <td>{formatNumber(item.accumulated)}</td>
-                        <td>{formatNumber(item.valuePresent)}</td>
-                      </>
-                    )}
-                    {viewMode === "year" && (
-                      <>
-                        <td>{formatNumber(item.accumulatedYearPrev)}</td>
+                depriData?.map((item, index) => (
+                  <React.Fragment key={index}>
+                    <tr className="main-row ">
+                      <td className="stick-header">{item.deptName}</td>
+                      <td>{formatNumber(item.totalPrice)}</td>
+                      <td>{formatNumber(item.totalValuePerMonth)}</td>
+                      <td>{formatNumber(item.totalValuePresent)}</td>
+                      <td>{formatNumber(item.totalValuePrev)}</td>
+                      <td>
+                        {formatNumber(
+                          item.totalValuePrev + item.totalValuePresent
+                        )}
+                      </td>
+                      <td>
+                        {formatNumber(
+                          item.totalPrice -
+                            (item.totalValuePrev + item.totalValuePresent)
+                        )}
+                      </td>
+                    </tr>
+                    {item?.assetTypes.map((subItem, subIndex) => (
+                      <tr key={`${index}-${subIndex}`}>
+                        <td className="stick-header">{subItem.typeName}</td>
+                        <td>{formatNumber(subItem.price)}</td>
+                        {viewMode === "month" && (
+                          <>
+                            <td>{formatNumber(subItem.valuePerMonth)}</td>
+                            <td>{formatNumber(subItem.valuePrev)}</td>
+                            <td>{formatNumber(subItem.valuePresent)} </td>
+                            <td>
+                              {formatNumber(
+                                subItem.valuePresent + subItem.valuePrev
+                              )}{" "}
+                            </td>
+                            <td>
+                              {formatNumber(
+                                subItem.price -
+                                  (subItem.valuePresent + subItem.valuePrev)
+                              )}{" "}
+                            </td>
+                          </>
+                        )}
+                        {viewMode === "year" && (
+                          <>
+                            {/* <td>{formatNumber(item.accumulatedYearPrev)}</td>
                         <td>{formatNumber(item.accumulatedPresentPrev)}</td>
                         <td>{formatNumber(item.months[1])}</td>
                         <td>{formatNumber(item.months[2])}</td>
@@ -241,10 +258,12 @@ const Depriciation = () => {
                         <td>{formatNumber(item.months[9])}</td>
                         <td>{formatNumber(item.months[10])}</td>
                         <td>{formatNumber(item.months[11])}</td>
-                        <td>{formatNumber(item.months[12])}</td>
-                      </>
-                    )}{" "}
-                  </tr>
+                        <td>{formatNumber(item.months[12])}</td> */}
+                          </>
+                        )}{" "}
+                      </tr>
+                    ))}
+                  </React.Fragment>
                 ))}
             </tbody>
           </table>
@@ -257,7 +276,7 @@ const Depriciation = () => {
           onPageChange={handlePageClick}
           pageRangeDisplayed={1}
           marginPagesDisplayed={2}
-          pageCount="7"
+          pageCount="1"
           previousLabel="<"
           pageClassName="page-item"
           pageLinkClassName="page-link"

@@ -7,6 +7,7 @@ import Loading from "../components/loading";
 import importIcon from "../components/assets/importIcon.png";
 import addIcon from "../components/assets/importIcon.png";
 import assetInfo from "../components/assets/assetInfo.png";
+import { useNavigate } from "react-router-dom";
 
 const AssetsDetail = () => {
   const [assetData, setAssetData] = useState(null);
@@ -31,9 +32,14 @@ const AssetsDetail = () => {
   const [assetType, setAssetType] = useState([]);
   const [selectedValue, setSelectedValue] = useState(-1); // 'all' or some default value
 
+  //inforTotal
+  const [totalAsset, setTotalAsset] = useState(0); // 'all' or some default value
+
   //depart
   const [department, setDepartment] = useState("");
   const [selectedDeptValue, setSelectedDeptValue] = useState(-1); // 'all' or some default value
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     let timer = null;
@@ -76,6 +82,23 @@ const AssetsDetail = () => {
         console.log("AssetType", data);
         // setTotalPage(data.data.totalPage);
         setAssetType(data);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+  useEffect(() => {
+    let timer = null;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/asset/count`);
+
+        const data = await response.json();
+        setTotalAsset(data);
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -201,16 +224,10 @@ const AssetsDetail = () => {
           </div>
         </div>
 
-        {/* <div className="content-top__button">
-          <div className="asset-content__addMore">
-            <img src={addIcon} alt="" />
-            <span>Thêm tài sản</span>
-          </div>
+        <div className="content-top__button">
           <div className="importExcel">
-            <img className="importIcon" src={importIcon} alt="" />
-
             <label htmlFor="fileInput" className="customFileInput">
-              Nhập file tài sản
+              <img className="importIcon" src={importIcon} alt="" />
             </label>
             <input
               id="fileInput"
@@ -226,7 +243,7 @@ const AssetsDetail = () => {
               </div>
             )}
           </div>
-        </div> */}
+        </div>
       </div>
 
       <div className="asset-content__sellection">
@@ -235,7 +252,7 @@ const AssetsDetail = () => {
             <img src={assetInfo} alt="" />
             <div>
               <p className="info-title">Tổng cộng tài sản</p>
-              <h2 className="info-number">1,250</h2>
+              <h2 className="info-number">{totalAsset}</h2>
               <div className="info-change">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -314,7 +331,7 @@ const AssetsDetail = () => {
           <table>
             <thead>
               <tr>
-                <th colSpan={9}>
+                <th colSpan={10}>
                   {" "}
                   <div className="content-sellection">
                     <div className="content-sellection__state">
@@ -396,7 +413,7 @@ const AssetsDetail = () => {
                         >
                           <option value="-1">Tất cả</option>
                           {!loading &&
-                            department?.data.listDepartment.map(
+                            department?.data?.listDepartment.map(
                               (asset, key) => (
                                 <option key={asset.id} value={asset.id}>
                                   {asset?.name}
@@ -409,7 +426,7 @@ const AssetsDetail = () => {
                     <div className="content-sellection__state">
                       <div className="sellection-date">
                         <div className="date">
-                          <label>Từ ngày:</label>
+                          <span>Từ ngày:</span>
                           <input
                             type="date"
                             value={fromDate}
@@ -417,7 +434,7 @@ const AssetsDetail = () => {
                           />
                         </div>
                         <div className="date">
-                          <label>Đến ngày:</label>
+                          <span>Đến ngày:</span>
                           <input
                             type="date"
                             value={toDate}
@@ -435,6 +452,7 @@ const AssetsDetail = () => {
                   <input type="checkbox" />
                 </th>
                 <th>Tài sản</th>
+                <th>Phòng ban sử dụng</th>
                 <th>Người sử dụng</th>
                 <th>Kiểu tài sản</th>
                 <th>Nhóm tài sản</th>
@@ -453,7 +471,19 @@ const AssetsDetail = () => {
                     <td>
                       <input type="checkbox" />
                     </td>
-                    <td>{asset.assetName}</td>
+                    <td>
+                      {" "}
+                      <div
+                        onClick={() =>
+                          navigate(`/asset/details/${asset.assetId}`)
+                        }
+                      >
+                        {asset.assetName}
+                      </div>
+                    </td>
+                    <td style={{ fontWeight: "600" }}>
+                      {asset?.user?.dept.name}
+                    </td>
                     <td style={{ fontWeight: "600" }}>
                       {asset?.user?.fullName}
                     </td>

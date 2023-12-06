@@ -54,6 +54,16 @@ const Sidebar = ({ children }) => {
         },
         {
           id: 1,
+          path: "/asset/depreciation-manage",
+          name: "Thông tin quản lý",
+        },
+        {
+          id: 1,
+          path: "/asset/depreciation-upgrade",
+          name: "Thông tin nâng cấp",
+        },
+        {
+          id: 1,
           path: "/asset/depreciation-info",
           name: "Thông tin khấu hao",
         },

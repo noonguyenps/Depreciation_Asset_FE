@@ -6,16 +6,21 @@
   margin: 0;
   padding: 0;
   text-decoration: none;
+  font-family: "Poppins", sans-serif;
 }
 body {
-  font-family: "Poppins", sans-serif;
 }
 .asset__contain {
   max-width: 1400px;
   padding: 20px 15px;
+  background-color: #fafbff;
   h2 {
     margin-bottom: 20px;
+    line-height: 1;
   }
+}
+#app {
+  background-color: #fafbff;
 }
 .contain {
   margin: 0 auto;
@@ -119,62 +124,69 @@ body {
 .menu-section {
   padding: 15px 15px;
 }
-.asset__detail {
-  padding: 20px 15px;
+.depri__content {
+  background-color: #fff;
+  padding: 20px 0;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  .asset-image {
-    justify-content: center;
-    display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
+  border-radius: 10px;
+  .asset__detail {
+    padding: 20px 15px;
+    .asset-image {
+      justify-content: center;
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
 
-    .image-container {
-      width: 100%; /* Kích thước ảnh mong muốn */
-      height: 400px; /* Kích thước ảnh mong muốn */
-      overflow: hidden;
-      position: relative;
-      img {
+      .image-container {
+        width: 100%; /* Kích thước ảnh mong muốn */
+        height: 250px; /* Kích thước ảnh mong muốn */
+        overflow: hidden;
+        position: relative;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+
+      .image-border {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        box-sizing: border-box;
+        border: 2px dashed #ccc; /* Màu và độ dày của viền */
       }
     }
-
-    .image-border {
-      position: absolute;
-      top: 0;
-      left: 0;
+    .asset-info {
       width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      border: 2px dashed #ccc; /* Màu và độ dày của viền */
+      display: flex;
+      margin-bottom: 10px;
+      gap: 15px;
+      &__input {
+        width: 100%;
+      }
     }
-  }
-  .asset-info {
-    width: 100%;
-    display: flex;
-    gap: 15px;
-    &__input {
-      width: 100%;
+    .asset-item {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
     }
-  }
-  .asset-item {
-    display: flex;
-    gap: 15px;
-    margin-top: 25px;
-  }
-  label {
-    margin-bottom: 10px;
-  }
+    label {
+      margin-bottom: 10px;
+    }
 
-  input {
-    width: 100%;
-    border: 1px solid #c4c4c4;
-    border-radius: 5px;
-    background-color: #fff;
-    padding: 3px 5px;
+    input {
+      width: 100%;
+      border: 1px solid #c4c4c4;
+      border-radius: 5px;
+      background-color: #fff;
+      padding: 3px 5px;
+    }
   }
 }
+
 .pie-chart {
   width: 40%;
   height: 100%;
@@ -209,39 +221,82 @@ body {
     flex: 1; /* Mỗi biểu đồ sẽ chiếm toàn bộ chiều rộng */
   }
 }
-.table-container {
-  max-width: 100%;
-  margin-top: 20px;
-  .table-parent {
-    border-collapse: collapse;
-    max-width: 1400px;
-    margin: 0 auto;
-    width: 100%;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-    border-radius: 10px;
 
-    overflow: hidden; /* Ensure that rounded corners are applied */
-    .header-table th {
-      color: #141a4e;
-      background-color: #e1e8f2;
+.table-container {
+  overflow: hidden;
+  width: 100%;
+  h4 {
+    margin: 10px 10px 20px 20px;
+  }
+  .depri-infor {
+    overflow-x: auto;
+    position: relative;
+    max-width: 1400px;
+    .table-parent {
+      border-collapse: collapse;
+      max-width: 1400px;
+      white-space: nowrap; /* Ensure that rounded corners are applied */
+      width: 100%;
+      .header-table > th {
+        color: #141a4e;
+        background-color: #eaf9ff;
+        padding: 15px 35px 15px 30px;
+        text-align: center;
+        color: #159712;
+      }
+
+      td {
+        max-width: 200px; /* Set the desired max-width */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 15px 35px 15px 30px;
+
+        text-align: center;
+        .user-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          .image {
+            img {
+              width: 30px;
+              height: 30px;
+              border-radius: 50%;
+              box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+                rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+                rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+              object-fit: contain;
+            }
+          }
+        }
+      }
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
     }
   }
-  .table-child {
-  }
-  td {
-    max-width: 200px; /* Set the desired max-width */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  .table-child__wrapper {
+    overflow-x: auto;
+    td {
+      overflow-x: auto;
+    }
+    .table-child {
+      overflow-x: auto; /* Enable vertical scrolling */
+    }
+    .table-scroll {
+      overflow-x: auto;
+    }
+    table {
+      max-width: 400px;
+      overflow-x: scroll;
+    }
 
-  th,
-  td {
-    padding: 8px;
-    text-align: left;
-  }
-
-  tr:hover {
-    background-color: #f5f5f5;
+    th {
+      padding: 8px 35px 8px 30px;
+    }
+    tr:first-child {
+      text-align: start;
+    }
   }
 }

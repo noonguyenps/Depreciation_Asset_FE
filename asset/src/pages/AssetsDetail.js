@@ -7,6 +7,12 @@ import Loading from "../components/loading";
 import importIcon from "../components/assets/importIcon.png";
 import addIcon from "../components/assets/importIcon.png";
 import assetInfo from "../components/assets/assetInfo.png";
+import assetInfo1 from "../components/assets/assetInfo1.png";
+import assetInfo2 from "../components/assets/assetInfo2.png";
+import { LuFilter } from "react-icons/lu";
+import { FaRegFileAlt } from "react-icons/fa";
+import { Select, Space } from "antd";
+
 import { useNavigate } from "react-router-dom";
 
 const AssetsDetail = () => {
@@ -34,18 +40,23 @@ const AssetsDetail = () => {
 
   //inforTotal
   const [totalAsset, setTotalAsset] = useState(0); // 'all' or some default value
+  const [totalDepri, setTotalDepri] = useState(0); // 'all' or some default value
+  const [totalUser, setTotalUser] = useState(0); // 'all' or some default value
 
   //depart
   const [department, setDepartment] = useState("");
   const [selectedDeptValue, setSelectedDeptValue] = useState(-1); // 'all' or some default value
 
   const navigate = useNavigate();
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     let timer = null;
 
     const fetchData = async () => {
       try {
+        setLoading(true); // Set loading to true before starting the API call
+
         const response = await fetch(
           `http://localhost:8080/api/asset/filter?page=${currentPage}&size=${assetsPerPage}&date?fromDate=${fromDate}&toDate=${toDate}&user=${userId}&assetType=${selectedValue}&dept=${selectedDeptValue}`
         );
@@ -54,10 +65,10 @@ const AssetsDetail = () => {
         console.log("data", data);
         setTotalPage(data.data.totalPage);
         setAssetData(data);
-
-        setLoading(false);
       } catch (error) {
-        setLoading(false);
+        // console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Set loading to false regardless of success or failure
       }
     };
 
@@ -82,14 +93,12 @@ const AssetsDetail = () => {
         console.log("AssetType", data);
         // setTotalPage(data.data.totalPage);
         setAssetType(data);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
+      } catch (error) {}
     };
 
     fetchData();
   }, []);
+  //Count Asset
   useEffect(() => {
     let timer = null;
 
@@ -99,18 +108,44 @@ const AssetsDetail = () => {
 
         const data = await response.json();
         setTotalAsset(data);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
+      } catch (error) {}
     };
 
     fetchData();
   }, []);
-
+  //Count Depreciate
   useEffect(() => {
     let timer = null;
 
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/depreciation/count`
+        );
+
+        const data = await response.json();
+        setTotalDepri(data);
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, []);
+  //Count User
+  useEffect(() => {
+    let timer = null;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/user/count`);
+
+        const data = await response.json();
+        setTotalUser(data);
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, []);
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -119,18 +154,13 @@ const AssetsDetail = () => {
 
         const data = await response.json();
         console.log("depart", data);
-        // setTotalPage(data.data.totalPage);
         setDepartment(data);
-
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
+      } catch (error) {}
     };
 
     fetchData();
   }, []);
-
+  console.log("department", department);
   useEffect(() => {
     setCurrentPage(0);
   }, [fromDateDebounce, toDateDebounce]);
@@ -179,15 +209,18 @@ const AssetsDetail = () => {
     }
   };
 
-  const handleSelectChange = (event) => {
-    setSelectedValue(event.target.value);
-    console.log("selectedValue", selectedValue);
-  };
-
   const handleUserChange = (e) => {
     setUserId(e);
   };
 
+  const formatNumber = (number) => {
+    return number
+      ? number.toLocaleString("en-US", {
+          minimumFractionDigits: 3,
+          maximumFractionDigits: 3,
+        })
+      : 0;
+  };
   return (
     <div className="asset__content">
       <div className="content-top">
@@ -224,10 +257,151 @@ const AssetsDetail = () => {
           </div>
         </div>
 
-        <div className="content-top__button">
+        <div className="content-top__button"></div>
+      </div>
+      <div className="asset-content__sellection">
+        <div className="content-sellection__infor">
+          <div className="info">
+            <img src={assetInfo} alt="" />
+            <div>
+              <p className="info-title">Tổng cộng tài sản</p>
+              <h2 className="info-number">{totalAsset}</h2>
+            </div>
+          </div>
+          <div className="info">
+            <img src={assetInfo1} alt="" />
+            <div>
+              <p className="info-title">Chi phí khâu hao</p>
+              <h2 className="info-number">{formatNumber(totalDepri)}</h2>
+            </div>
+          </div>
+          <div className="info">
+            <img src={assetInfo2} alt="" />
+            <div>
+              <p className="info-title">Người sử dụng</p>
+              <h2 className="info-number">{totalUser}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="asset-content__detail">
+        <div className="content-sellection ">
+          <div className="content-sellection__state">
+            <span className="filter-title">
+              {" "}
+              <LuFilter size={"12px"} />
+              Nhóm tài sản
+            </span>
+            <div className="state-dropdown">
+              <Space wrap>
+                <Select
+                  value={selectedDeptValue}
+                  style={{
+                    width: 120,
+                  }}
+                  onChange={(e) => setSelectedDeptValue(e)}
+                  dropdownMatchSelectWidth={false}
+                >
+                  <Option value={-1}>Tất cả</Option>
+                  {!loading &&
+                    department?.listDepartment?.map((asset, key) => (
+                      <Option key={asset.id} value={asset.id}>
+                        {asset.name}
+                      </Option>
+                    ))}
+                </Select>
+              </Space>
+            </div>
+          </div>
+          <div className="content-sellection__state">
+            <span className="filter-title">
+              {" "}
+              <LuFilter size={"12px"} />
+              Loại tài sản:
+            </span>
+            <div className="state-dropdown">
+              <Space wrap>
+                <Select
+                  value={selectedValue}
+                  style={{
+                    width: 120,
+                  }}
+                  onChange={(e) => setSelectedValue(e)}
+                  dropdownMatchSelectWidth={false}
+                >
+                  <Option value={-1}>Tất cả</Option>
+                  {!loading &&
+                    assetType?.map((asset) => (
+                      <Option key={asset.id} value={asset.id}>
+                        {asset.assetName}
+                      </Option>
+                    ))}
+                </Select>
+              </Space>
+            </div>
+          </div>
+          <div className="content-sellection__state">
+            <span className="filter-title">
+              {" "}
+              <LuFilter size={"12px"} />
+              Phòng Ban:
+            </span>
+            <div className="state-dropdown">
+              <Space wrap>
+                <Select
+                  value={selectedDeptValue}
+                  style={{
+                    width: 120,
+                  }}
+                  onChange={(e) => setSelectedDeptValue(e)}
+                  dropdownMatchSelectWidth={false}
+                >
+                  <Option value={-1}>Tất cả</Option>
+                  {!loading &&
+                    department?.listDepartment?.map((asset, key) => (
+                      <Option key={asset.id} value={asset.id}>
+                        {asset.name}
+                      </Option>
+                    ))}
+                </Select>
+              </Space>
+            </div>
+          </div>
+          <div className="content-sellection__state">
+            <div className="sellection-date">
+              <div className="date">
+                <span>
+                  {" "}
+                  <LuFilter size={"12px"} />
+                  Ngày nhập kho:
+                </span>
+                <div className="date-sellect">
+                  <div className="date-title">
+                    <div>Từ ngày</div>
+                    <input
+                      type="date"
+                      value={fromDate}
+                      onChange={(e) => handleDateChange(e, "from")}
+                    />
+                  </div>
+                  <div className="date-title">
+                    <div>Đến ngày</div>
+                    <input
+                      type="date"
+                      value={toDate}
+                      onChange={(e) => handleDateChange(e, "to")}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="importExcel">
+            <span>Nhập file excel:</span>
             <label htmlFor="fileInput" className="customFileInput">
-              <img className="importIcon" src={importIcon} alt="" />
+              <FaRegFileAlt />
+              File
             </label>
             <input
               id="fileInput"
@@ -244,214 +418,12 @@ const AssetsDetail = () => {
             )}
           </div>
         </div>
-      </div>
-
-      <div className="asset-content__sellection">
-        <div className="content-sellection__infor">
-          <div className="info">
-            <img src={assetInfo} alt="" />
-            <div>
-              <p className="info-title">Tổng cộng tài sản</p>
-              <h2 className="info-number">{totalAsset}</h2>
-              <div className="info-change">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="2.5"
-                  stroke="currentColor"
-                  class="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
-                  />
-                </svg>
-                <span className="info-change__color">16%</span>
-                <span>tháng này</span>
-              </div>
-            </div>
-          </div>
-          <div className="info">
-            <img src={assetInfo} alt="" />
-            <div>
-              <p className="info-title">Chi phí khâu hao</p>
-              <h2 className="info-number">5,150,000</h2>
-              <div className="info-change">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="2.5"
-                  stroke="currentColor"
-                  class="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
-                  />
-                </svg>
-                <span className="info-change__color">100%</span>
-                <span>tháng này</span>
-              </div>
-            </div>
-          </div>
-          <div className="info">
-            <img src={assetInfo} alt="" />
-            <div>
-              <p className="info-title">Nhân viên</p>
-              <h2 className="info-number">50</h2>
-              <div className="info-change">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="2.5"
-                  stroke="currentColor"
-                  class="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
-                  />
-                </svg>
-                <span className="info-change__color">100%</span>
-                <span>tháng này</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="asset-content__detail">
         <div class="table-container">
           <table>
             <thead>
+              <tr></tr>
               <tr>
-                <th colSpan={10}>
-                  {" "}
-                  <div className="content-sellection">
-                    <div className="content-sellection__state">
-                      <span>Nhóm tài sản</span>
-                      <div className="state-dropdown">
-                        <select
-                          // value={selectedValue}
-                          style={{ width: "100px" }}
-                          className="select-dropdown"
-                        >
-                          <option value="all">Tất cả</option>
-                          <option value="1">Máy móc, thiết bị động lực</option>
-                          <option value="2">Máy móc, thiết bị công tác</option>
-                          <option value="3">
-                            Dụng cụ làm việc đo lường, thí nghiệm
-                          </option>
-                          <option value="4">
-                            Thiết bị và phương tiện vận tải
-                          </option>
-                          <option value="5">Dụng cụ quản lý</option>
-                          <option value="6">Nhà cửa, vật kiến trúc</option>
-                          <option value="7">"Súc vật, vườn cây lâu năm"</option>
-                        </select>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="w-6 h-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="content-sellection__state">
-                      <span>Kiểu tài sản:</span>
-                      <div className="state-dropdown">
-                        <select
-                          value={selectedValue}
-                          onChange={(e) => setSelectedValue(e.target.value)}
-                          style={{ width: "100px" }}
-                        >
-                          <option value="all">Tất cả</option>
-                          {!loading &&
-                            assetType?.map((asset) => (
-                              <option key={asset.id} value={asset.id}>
-                                {asset.assetName}
-                              </option>
-                            ))}
-                        </select>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="w-6 h-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="content-sellection__state">
-                      <span>Phòng Ban:</span>
-                      <div className="state-dropdown">
-                        <select
-                          value={selectedDeptValue}
-                          onChange={(e) => setSelectedDeptValue(e.target.value)}
-                          style={{ width: "100px" }}
-                        >
-                          <option value="-1">Tất cả</option>
-                          {!loading &&
-                            department?.data?.listDepartment.map(
-                              (asset, key) => (
-                                <option key={asset.id} value={asset.id}>
-                                  {asset?.name}
-                                </option>
-                              )
-                            )}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="content-sellection__state">
-                      <div className="sellection-date">
-                        <div className="date">
-                          <span>Từ ngày:</span>
-                          <input
-                            type="date"
-                            value={fromDate}
-                            onChange={(e) => handleDateChange(e, "from")}
-                          />
-                        </div>
-                        <div className="date">
-                          <span>Đến ngày:</span>
-                          <input
-                            type="date"
-                            value={toDate}
-                            onChange={(e) => handleDateChange(e, "to")}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </th>
-              </tr>
-              <tr>
-                <th>
-                  {" "}
-                  <input type="checkbox" />
-                </th>
-                <th>Tài sản</th>
+                <th className="stick">Tài sản</th>
                 <th>Phòng ban sử dụng</th>
                 <th>Người sử dụng</th>
                 <th>Kiểu tài sản</th>
@@ -463,15 +435,11 @@ const AssetsDetail = () => {
               </tr>
             </thead>
             {loading && <Loading />}
-
             <tbody>
               {!loading &&
                 assetData?.data.assets.map((asset, index) => (
                   <tr key={asset.assetId}>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
+                    <td className="stick-header">
                       {" "}
                       <div
                         onClick={() =>
@@ -485,13 +453,18 @@ const AssetsDetail = () => {
                       {asset?.user?.dept.name}
                     </td>
                     <td style={{ fontWeight: "600" }}>
-                      {asset?.user?.fullName}
+                      <div className="user-item">
+                        <div className={asset?.user?.image ? "image" : ""}>
+                          <img src={asset?.user?.image} alt="" />
+                        </div>
+                        {asset?.user?.fullName}
+                      </div>
                     </td>
                     <td>{asset.assetTypeName}</td>
                     <td>{asset.assetGroup || "Sản xuất"}</td>
                     <td>{asset.dateInStored}</td>
                     <td>{asset.statusName}</td>
-                    <td>{asset.price}</td>
+                    <td>{formatNumber(asset.price)}</td>
                     <td>
                       <div
                         className={`status ${
@@ -504,36 +477,30 @@ const AssetsDetail = () => {
                   </tr>
                 ))}
             </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan="9" className="paging">
-                  <div>
-                    {" "}
-                    <ReactPaginate
-                      nextLabel=">"
-                      onPageChange={handlePageClick}
-                      pageRangeDisplayed={1}
-                      marginPagesDisplayed={2}
-                      pageCount={totalPage}
-                      previousLabel="<"
-                      pageClassName="page-item"
-                      pageLinkClassName="page-link"
-                      previousClassName="page-item"
-                      previousLinkClassName="page-link"
-                      nextClassName="page-item"
-                      nextLinkClassName="page-link"
-                      breakLabel="..."
-                      breakClassName="page-item"
-                      breakLinkClassName="page-link"
-                      containerClassName="pagination"
-                      activeClassName="active"
-                    />
-                  </div>
-                </td>
-              </tr>
-            </tfoot>
           </table>
         </div>
+      </div>
+      <div className="paging-wrapper">
+        {" "}
+        <ReactPaginate
+          nextLabel=">"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={1}
+          marginPagesDisplayed={2}
+          pageCount={totalPage}
+          previousLabel="<"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakLabel="..."
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+        />
       </div>
     </div>
   );

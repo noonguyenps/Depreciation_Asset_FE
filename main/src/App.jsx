@@ -9,7 +9,9 @@ import Home from "./pages/Home";
 import Asset from "./pages/Asset";
 import Charts from "./pages/Charts";
 import IdContext from "./context/context";
-import DepricationInfor from "./pages/DepriciationInfor";
+import DepreciationInfor from "./pages/DepreciationInfor";
+import Manage from "./pages/Manage";
+import DepreciationUpgrade from "./pages/DepreciationUpgrade";
 
 const AssetsDetail = React.lazy(() => import("asset/AssetsDetail"));
 const Depriciation = React.lazy(() => import("depriciation/Depriciation"));
@@ -25,9 +27,13 @@ const App = () => {
             <Route path="/asset/details/:id" element={<Asset />} />
             <Route
               path="/asset/depreciation-info"
-              element={<DepricationInfor />}
+              element={<DepreciationInfor />}
             />
-
+             <Route
+              path="/asset/depreciation-upgrade"
+              element={<DepreciationUpgrade />}
+            />
+            <Route path="/asset/depreciation-manage" element={<Manage />} />
             <Route path="/depreciation" element={<Depriciation />} />
             <Route path="/depriciation/list" element={<Depriciation />} />
             <Route path="/depriciation/charts" element={<Charts />} />

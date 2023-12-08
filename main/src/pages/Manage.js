@@ -33,7 +33,7 @@ const Manage = () => {
   return (
     <div>
       <div className="asset__contain">
-        <h2>Lịch sử khấu hao</h2>
+        <h2>Thông tin quản lý</h2>
         <div className="depri__content">
           {depriData && (
             <>
@@ -75,7 +75,7 @@ const Manage = () => {
                     <label htmlFor="maTaiSan">Người sử dụng</label>
                     <input
                       type="text"
-                      value={depriData.userResponse.fullName}
+                      value={depriData?.userResponse?.fullName}
                       disabled
                     />
                   </div>
@@ -83,7 +83,7 @@ const Manage = () => {
                     <label htmlFor="tenTaiSan">Phòng ban hiện tại</label>
                     <input
                       type="text"
-                      value={depriData.userResponse.dept.name}
+                      value={depriData.userResponse?.dept.name}
                       disabled
                     />
                   </div>
@@ -94,7 +94,7 @@ const Manage = () => {
                     <label htmlFor="maTaiSan">Vị trí hiện tại</label>
                     <input
                       type="text"
-                      value={depriData.userResponse.dept.location}
+                      value={depriData.userResponse?.dept.location}
                       disabled
                     />
                   </div>
@@ -128,11 +128,11 @@ const Manage = () => {
                             <tr>
                               <td>{item.deliveryType}</td>
                               <td>{item.userResponse.fullName}</td>
-                              <td>{item.userResponse.dept.name}</td>
-                              <td>{item.userResponse.dept.location}</td>
+                              <td>{item.userResponse?.dept?.name}</td>
+                              <td>{item.userResponse?.dept.location}</td>
                               <td>{item.deliveryDate}</td>
-                              <td>Null</td>
-                              <td>Null</td>
+                              <td>Nguyễn Văn Tiến</td>
+                              <td>Đang sử dụng</td>
                               <td>{item.note}</td>
                             </tr>
                           </React.Fragment>

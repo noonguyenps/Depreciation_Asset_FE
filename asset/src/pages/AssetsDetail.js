@@ -24,15 +24,15 @@ const AssetsDetail = () => {
   const [assetsPerPage, setAssetsPerPage] = useState(5);
   const [totalPage, setTotalPage] = useState(0);
   //filterDate
-  const [fromDate, setFromDate] = useState("2019-12-24");
+  const [fromDate, setFromDate] = useState("2014-12-24");
   const [toDate, setToDate] = useState("2023-12-24");
   const fromDateRef = useRef(null);
   const toDateRef = useRef(null);
   const fromDateDebounce = useDebounce(fromDate, 500);
   const toDateDebounce = useDebounce(toDate, 500);
   //filterUser
-  const [userId, setUserId] = useState("");
-  const userDebounce = useDebounce(userId, 500);
+  const [userName, setUserName] = useState("namenull");
+  const userDebounce = useDebounce(userName, 500);
 
   //typeAsset
   const [assetType, setAssetType] = useState([]);
@@ -46,6 +46,7 @@ const AssetsDetail = () => {
   //depart
   const [department, setDepartment] = useState("");
   const [selectedDeptValue, setSelectedDeptValue] = useState(-1); // 'all' or some default value
+  const [selectedGroupValue, setSelectedGroupValue] = useState(-1); // 'all' or some default value
 
   const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -58,7 +59,7 @@ const AssetsDetail = () => {
         setLoading(true); // Set loading to true before starting the API call
 
         const response = await fetch(
-          `http://localhost:8080/api/asset/filter?page=${currentPage}&size=${assetsPerPage}&date?fromDate=${fromDate}&toDate=${toDate}&user=${userId}&assetType=${selectedValue}&dept=${selectedDeptValue}`
+          `http://localhost:8080/api/asset/filter?page=${currentPage}&size=${assetsPerPage}&fromDate=${fromDate}&toDate=${toDate}&name=${userName}&assetType=${selectedValue}&dept=${selectedDeptValue}`
         );
 
         const data = await response.json();
@@ -210,7 +211,7 @@ const AssetsDetail = () => {
   };
 
   const handleUserChange = (e) => {
-    setUserId(e);
+    setUserName(e);
   };
 
   const formatNumber = (number) => {
@@ -233,8 +234,8 @@ const AssetsDetail = () => {
               <input
                 type="text"
                 className="search-box__input"
-                placeholder="Tìm kiếm..."
-                value={userId}
+                placeholder="Tìm kiếm tài sản"
+                value={userName != "namenull" ? userName : ""}
                 onChange={(e) => handleUserChange(e.target.value)}
               />
               <div className="search-box__icon">
@@ -243,7 +244,7 @@ const AssetsDetail = () => {
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
-                  stroke="currentColor"
+                  stroke="gray"
                   className="w-6 h-6"
                 >
                   <path
@@ -256,8 +257,6 @@ const AssetsDetail = () => {
             </div>
           </div>
         </div>
-
-        <div className="content-top__button"></div>
       </div>
       <div className="asset-content__sellection">
         <div className="content-sellection__infor">
@@ -299,7 +298,7 @@ const AssetsDetail = () => {
                   style={{
                     width: 120,
                   }}
-                  onChange={(e) => setSelectedDeptValue(e)}
+                  onChange={(e) => setSelectedGroupValue(e)}
                   dropdownMatchSelectWidth={false}
                 >
                   <Option value={-1}>Tất cả</Option>

@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import { FaBoxOpen } from "react-icons/fa6";
 import ReactPaginate from "react-paginate";
 import "./sass/style.scss";
+import { Select, Space } from "antd";
+import { LuFilter } from "react-icons/lu";
 
-import { MdCalculate } from "react-icons/md";
+import { MdCalculate, MdArrowDropDown, MdArrowRight } from "react-icons/md";
 
 const Depriciation = () => {
   const [depriData, setDepriData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+  const [department, setDepartment] = useState(0);
 
   const [assetsPerPage, setAssetsPerPage] = useState(5);
   const [totalPage, setTotalPage] = useState(0);
@@ -18,6 +21,7 @@ const Depriciation = () => {
   const [viewMonth, setViewMonth] = useState(8);
 
   const currentYear = new Date().getFullYear();
+  const [submenuOpen, setSubmenuOpen] = useState(false);
 
   console.log("yearOfDate", currentYear);
 
@@ -27,7 +31,7 @@ const Depriciation = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/depreciation/history/dept?&year=${viewYear}`
+          `http://localhost:8080/api/depreciation/history/dept?&year=${viewYear}&ids=${department}`
         );
 
         const data = await response.json();
@@ -41,7 +45,7 @@ const Depriciation = () => {
     };
 
     fetchData();
-  }, [currentPage, viewYear]);
+  }, [currentPage, viewYear, department]);
   console.log("depriData", depriData);
   const handleYearChange = (sellectedYear) => {
     setViewYear(sellectedYear);
@@ -53,8 +57,7 @@ const Depriciation = () => {
   const formatNumber = (number) => {
     return number
       ? number.toLocaleString("en-US", {
-          minimumFractionDigits: 3,
-          maximumFractionDigits: 3,
+          maximumFractionDigits: 0,
         })
       : 0;
   };
@@ -89,7 +92,37 @@ const Depriciation = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
+  const toggleSubmenu = () => {
+    setSubmenuOpen(!submenuOpen);
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/user/department`
+        );
 
+        const data = await response.json();
+        console.log("depart", data);
+        setDepartment(data);
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, []);
+  const options = [];
+  if (department?.listDepartment) {
+    for (let i = 0; i < department.listDepartment.length; i++) {
+      const asset = department.listDepartment[i];
+      options.push({
+        value: asset.id,
+        label: asset.name,
+      });
+    }
+  }
+  const handleDeptChange = (value) => {
+    console.log(`selected ${value}`);
+  };
   return (
     <div className="depri-container">
       <div className="content-top">
@@ -103,7 +136,7 @@ const Depriciation = () => {
           </div>
 
           <div className="content-top__filter">
-            <div className="search-box">
+            {/* <div className="search-box">
               <input
                 type="text"
                 className="search-box__input"
@@ -126,6 +159,21 @@ const Depriciation = () => {
                     d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
                   />
                 </svg>
+              </div>
+            </div> */}
+            <div className="content-sellection__state">
+              <div className="state-dropdown">
+                <div style={{ width: "100px" }}>
+                  <Select
+                    mode="tags"
+                    style={{
+                      width: "100%",
+                    }}
+                    onChange={handleDeptChange}
+                    tokenSeparators={[","]}
+                    options={options}
+                  />
+                </div>
               </div>
             </div>
             <div className="content-top__option">
@@ -167,7 +215,25 @@ const Depriciation = () => {
           <table>
             <thead>
               <tr>
-                <th className="stick">Loại tài sản</th>
+                <th className="stick">
+                  <div className="toggle-wrapper">
+                    {submenuOpen ? (
+                      <MdArrowDropDown
+                        size={30}
+                        className="toggle-icon"
+                        onClick={toggleSubmenu}
+                      />
+                    ) : (
+                      <MdArrowRight
+                        size={30}
+                        className="toggle-icon"
+                        onClick={toggleSubmenu}
+                      />
+                    )}
+
+                    <span style={{ marginLeft: "10px" }}>Loại tài sản</span>
+                  </div>
+                </th>
                 <th style={{ color: "red" }}>Khấu hao luỹ kế đầu năm</th>
                 <th>Giá trị KH tháng 1 </th>
                 <th>Giá trị KH tháng 2 </th>
@@ -212,14 +278,11 @@ const Depriciation = () => {
                       <td>{formatNumber(item.months[9])}</td>
                       <td>{formatNumber(item.total3)}</td>
                       <td>{formatNumber(item.months[10])}</td>
-                      <td>
-                        {formatNumber(item.months[11]) != 0
-                          ? formatNumber(item.months[11])
-                          : "-"}
-                      </td>
+                      <td>{formatNumber(item.months[11])}</td>
                       <td>
                         {" "}
-                        {formatNumber(item.months[12]) != 0
+                        {formatNumber(item.months[12]) !== 0 &&
+                        viewYear !== currentYear
                           ? formatNumber(item.months[12])
                           : "-"}
                       </td>
@@ -228,7 +291,12 @@ const Depriciation = () => {
                           ? formatNumber(item.total4)
                           : "-"}
                       </td>
-                      <td>{formatNumber(item.totalPrice)}</td>
+                      <td>
+                        {" "}
+                        {viewYear < currentYear
+                          ? formatNumber(item.totalPrice)
+                          : "-"}
+                      </td>
                       <td>
                         {viewYear < currentYear
                           ? formatNumber(
@@ -237,39 +305,61 @@ const Depriciation = () => {
                           : "-"}
                       </td>
                     </tr>
-                    {item?.assetTypes.map((subItem, subIndex) => (
-                      <tr key={`${index}-${subIndex}`}>
-                        <td className="stick-header">{subItem.typeName}</td>
-                        <td>{formatNumber(subItem.depreciationPrev)}</td>
-                        <td>{formatNumber(subItem.months[1])}</td>
-                        <td>{formatNumber(subItem.months[2])}</td>
-                        <td>{formatNumber(subItem.months[3])}</td>
-                        <td>{formatNumber(subItem.total1)}</td>
 
-                        <td>{formatNumber(subItem.months[4])}</td>
-                        <td>{formatNumber(subItem.months[5])}</td>
-                        <td>{formatNumber(subItem.months[6])}</td>
-                        <td>{formatNumber(subItem.total2)}</td>
+                    {item?.assetTypes.map(
+                      (subItem, subIndex) =>
+                        submenuOpen && (
+                          <tr key={`${index}-${subIndex}`}>
+                            <td className="stick-header">{subItem.typeName}</td>
+                            <td>{formatNumber(subItem.depreciationPrev)}</td>
+                            <td>{formatNumber(subItem.months[1])}</td>
+                            <td>{formatNumber(subItem.months[2])}</td>
+                            <td>{formatNumber(subItem.months[3])}</td>
+                            <td>{formatNumber(subItem.total1)}</td>
 
-                        <td>{formatNumber(subItem.months[7])}</td>
-                        <td>{formatNumber(subItem.months[8])}</td>
-                        <td>{formatNumber(subItem.months[9])}</td>
-                        <td>{formatNumber(subItem.total3)}</td>
+                            <td>{formatNumber(subItem.months[4])}</td>
+                            <td>{formatNumber(subItem.months[5])}</td>
+                            <td>{formatNumber(subItem.months[6])}</td>
+                            <td>{formatNumber(subItem.total2)}</td>
 
-                        <td>{formatNumber(subItem.months[10])}</td>
-                        <td>{formatNumber(subItem.months[11])}</td>
-                        <td>{formatNumber(subItem.months[12])}</td>
-                        <td>{formatNumber(subItem.total4)}</td>
-                        <td>{formatNumber(subItem.totalPrice)}</td>
-                        <td>
-                          {viewYear < currentYear
-                            ? formatNumber(
-                                subItem.totalPrice + subItem.depreciationPrev
-                              )
-                            : "-"}
-                        </td>
-                      </tr>
-                    ))}
+                            <td>{formatNumber(subItem.months[7])}</td>
+                            <td>{formatNumber(subItem.months[8])}</td>
+                            <td>{formatNumber(subItem.months[9])}</td>
+                            <td>{formatNumber(subItem.total3)}</td>
+
+                            <td>{formatNumber(subItem.months[10])}</td>
+                            <td>{formatNumber(subItem.months[11])}</td>
+                            <td>
+                              {" "}
+                              {formatNumber(subItem.months[12]) !== 0 &&
+                              viewYear !== currentYear
+                                ? formatNumber(subItem.months[12])
+                                : "-"}
+                            </td>
+                            {/* <td>{formatNumber(subItem.months[12])}</td> */}
+                            <td>
+                              {" "}
+                              {viewYear < currentYear
+                                ? formatNumber(subItem.total4)
+                                : "-"}
+                            </td>
+                            <td>
+                              {" "}
+                              {viewYear < currentYear
+                                ? formatNumber(subItem.totalPrice)
+                                : "-"}
+                            </td>
+                            <td>
+                              {viewYear < currentYear
+                                ? formatNumber(
+                                    subItem.totalPrice +
+                                      subItem.depreciationPrev
+                                  )
+                                : "-"}
+                            </td>
+                          </tr>
+                        )
+                    )}
                   </React.Fragment>
                 ))}
             </tbody>

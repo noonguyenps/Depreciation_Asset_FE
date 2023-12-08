@@ -14,7 +14,7 @@ const DepreciationUpgrade = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:8080/api/asset/delivery/${storedId}`
+          `http://localhost:8080/api/asset/update/${storedId}`
         )
           .then((res) => res.json())
           .then((data) => setDepriData(data))
@@ -29,7 +29,13 @@ const DepreciationUpgrade = () => {
     fetchData();
   }, []);
   console.log("manage", depriData);
-
+  const formatNumber = (number) => {
+    return number
+      ? number.toLocaleString("en-US", {
+          maximumFractionDigits: 0,
+        })
+      : 0;
+  };
   return (
     <div>
       <div className="asset__contain">
@@ -42,11 +48,17 @@ const DepreciationUpgrade = () => {
                   <div className="asset-info__input">
                     {" "}
                     <label htmlFor="maTaiSan">Nguyên giá ban đầu</label>
-                    <input type="text" value={depriData.storageName} />
+                    <input
+                      type="text"
+                      value={formatNumber(depriData.pricePrev)}
+                    />
                   </div>
                   <div className="asset-info__input">
                     <label htmlFor="tenTaiSan">Tổng chi phí nâng cấp</label>
-                    <input type="text" value="{}" />
+                    <input
+                      type="text"
+                      value={formatNumber(depriData.totalValueUpdate)}
+                    />
                   </div>
                 </div>
 
@@ -54,28 +66,22 @@ const DepreciationUpgrade = () => {
                   <div className="asset-info__input">
                     {" "}
                     <label htmlFor="maTaiSan">Nâng cấp gần nhất</label>
-                    <input type="text" value={depriData.dateInStored} />
+                    <input type="text" value={depriData.dateUpdateNearest} />
                   </div>
                   <div className="asset-info__input">
                     <label htmlFor="tenTaiSan">Ghi chú</label>
-                    <input type="text" value={depriData.storageLocation} />
+                    <input type="text" value={depriData.note} />
                   </div>
                 </div>
                 <div className="asset-info">
                   <div className="asset-info__input">
                     {" "}
                     <label htmlFor="maTaiSan">Thời gian phân bổ ban đầu</label>
-                    <input
-                      type="text"
-                      value={depriData.userResponse.fullName}
-                    />
+                    <input type="text" value={depriData.timePrev} />
                   </div>
                   <div className="asset-info__input">
                     <label htmlFor="tenTaiSan">Thời gian phân bổ thực tế</label>
-                    <input
-                      type="text"
-                      value={depriData.userResponse.dept.name}
-                    />
+                    <input type="text" value={depriData.timePre} />
                   </div>
                 </div>
               </div>
@@ -100,18 +106,27 @@ const DepreciationUpgrade = () => {
                     </thead>
                     <tbody>
                       {!loading &&
-                        depriData?.deliveryHistories?.map((item, index) => (
-                          <React.Fragment key={index}>
-                            <tr>
-                              <td>{item.deliveryType}</td>
-                              <td>{item.userResponse.fullName}</td>
-                              <td>{item.userResponse.dept.name}</td>
-                              <td>{item.userResponse.dept.location}</td>
-                              <td>{item.deliveryDate}</td>
-                              <td>{item.note}</td>
-                            </tr>
-                          </React.Fragment>
-                        ))}
+                        depriData?.updateHistoryResponses?.map(
+                          (item, index) => (
+                            <React.Fragment key={index}>
+                              <tr>
+                                <td>{item.userUsed.dept.name}</td>
+                                <td>{item.userUsed.fullName}</td>
+                                <td>{item.userUsed.fullName}</td>
+                                <td>{item.status}</td>
+                                <td>{item.updateDate}</td>
+
+                                <td>{item.userUpdate.fullName}</td>
+                                <td>{formatNumber(item.value)}</td>
+                                <td>
+                                  {formatNumber(item.value + item.valuePrev)}
+                                </td>
+                                <td>{item.note}</td>
+                                <td>{item.amountMonth}</td>
+                              </tr>
+                            </React.Fragment>
+                          )
+                        )}
                     </tbody>
                   </table>
                 </div>

@@ -8,7 +8,6 @@ import Sidebar from "./pages/Sidebar";
 import Home from "./pages/Home";
 import Asset from "./pages/Asset";
 import Charts from "./pages/Charts";
-import IdContext from "./context/context";
 import DepreciationInfor from "./pages/DepreciationInfor";
 import Manage from "./pages/Manage";
 import DepreciationUpgrade from "./pages/DepreciationUpgrade";
@@ -29,7 +28,7 @@ const App = () => {
               path="/asset/depreciation-info"
               element={<DepreciationInfor />}
             />
-             <Route
+            <Route
               path="/asset/depreciation-upgrade"
               element={<DepreciationUpgrade />}
             />

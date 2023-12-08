@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./sass/style.scss";
 import { useParams } from "react-router-dom"; // Import useParams
-import IdContext from "../context/context";
 
 const Asset = () => {
   const { id } = useParams(); // Get the id from the URL
@@ -35,8 +34,14 @@ const Asset = () => {
     if (!isNaN(id)) {
       localStorage.setItem("currentAssetId", id);
     }
-  }, [id]);
-
+  }, []);
+  const formatNumber = (number) => {
+    return number
+      ? number.toLocaleString("en-US", {
+          maximumFractionDigits: 0,
+        })
+      : 0;
+  };
   return (
     <div className="asset__contain">
       <h2>Thông tin chung</h2>
@@ -66,7 +71,7 @@ const Asset = () => {
             <div className="asset-info">
               <div className="asset-info__input">
                 <label htmlFor="nguyenGia">Nguyên Giá</label>
-                <input type="text" value={assetData.price} />
+                <input type="text" value={formatNumber(assetData.price)} />
               </div>
               <div className="asset-info__input">
                 {" "}

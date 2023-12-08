@@ -1,29 +1,19 @@
-import React, { useState, useContext, useEffect } from "react";
-import {
-  IoIosHome,
-  FaBars,
-  FaUserAlt,
-  FaRegChartBar,
-  FaCommentAlt,
-  FaShoppingBag,
-  FaThList,
-} from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaBars } from "react-icons/fa";
 import { useParams } from "react-router-dom"; // Import useParams
 
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import "./sass/style.scss";
 import "./sass/reset.scss";
+import "./sass/style.scss";
 
-import logo from "../components/assets/logo.jpg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChevronLeft,
-  faHouse,
   faBoxOpen,
   faCalculator,
+  faChevronLeft,
+  faHouse,
 } from "@fortawesome/free-solid-svg-icons";
-import Charts from "./Charts";
-import IdContext from "../context/context";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import logo from "../components/assets/logo.jpg";
 const Depriciation = React.lazy(() => import("depriciation/Depriciation"));
 
 const Sidebar = ({ children }) => {
@@ -31,10 +21,12 @@ const Sidebar = ({ children }) => {
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
   const [activeSubMenuId, setActiveSubMenuId] = useState(null); // State to track active submenu item
   const [dynamicTo, setDynamicTo] = useState("");
-  const location = useLocation();
-  const [currentAssetId, setCurrentAssetId] = useState();
+  const [localStoredId, setLocalStoredId] = useState("");
+  const [activeLinkId, setActiveLinkId] = useState(null);
+  let location = useLocation();
+
+  const navigate = useNavigate();
   const { id } = useParams();
-  console.log("id", id);
   const menuItem = [
     {
       path: "/",
@@ -71,20 +63,31 @@ const Sidebar = ({ children }) => {
     },
     {
       path: "/depreciation",
-      name: "Khấu hao",
+      name: "Bảng tính khấu hao",
       icon: <FontAwesomeIcon icon={faCalculator} />,
     },
   ];
+  console.log("userId", location);
+  useEffect(() => {
+    if (location.pathname.includes("/asset/details")) {
+      console.log("a", location.pathname.includes("/asset/details"));
+      setActiveLinkId(true);
+    }
+  }, [location]);
   const handleNavLinkClick = (item) => {
-    item.subMenu ? setIsSubMenuOpen(true) : setIsSubMenuOpen(false);
-    if (item.path.startsWith("/asset")) {
+    console.log("item", item);
+    setIsOpen(true);
+    if (item.path.startsWith("/asset/details")) {
       const storedId = localStorage.getItem("currentAssetId");
       const updatedAssetId = storedId
         ? `${item.path}/${storedId}`.replace(/\s+/g, "")
         : item.path;
       setDynamicTo(updatedAssetId);
+      setLocalStoredId(storedId);
+      console.log("updatedAssetId", updatedAssetId);
+      // setActiveLinkId(item.id);
 
-      setActiveSubMenuId(item.id);
+      navigate(updatedAssetId);
     }
   };
   const toggle = () => setIsOpen(!isOpen);
@@ -129,68 +132,37 @@ const Sidebar = ({ children }) => {
             }
             return (
               <div key={index}>
-                <NavLink
-                  to={
-                    dynamicTo && item.path == "/asset/details"
-                      ? dynamicTo
-                      : item.path
-                  }
-                  className={({ isActive }) =>
-                    isActive || (isSubMenuOpen && activeSubMenuId === item.id)
-                      ? "navbar-item active1 link link-parent"
-                      : "navbar-item link link-parent"
-                  }
-                  onClick={() => handleNavLinkClick(item)}
-                  disabled="disabled"
-                >
-                  <div className="icon">{item.icon}</div>
-                  <div
-                    style={{ display: isOpen ? "block" : "none" }}
-                    className="link_text "
-                  >
-                    {item.name}
-                  </div>
-                </NavLink>
-
-                {item.subMenu && (
-                  <div
-                    style={{
-                      display: isSubMenuOpen && isOpen ? "block" : "none",
+                {item.path == "/asset/details" ? (
+                  <NavLink
+                    className={({ isActive }) =>
+                      isActive && isSubMenuOpen
+                        ? "navbar-item active1 link link-parent"
+                        : "navbar-item link link-parent"
+                    }
+                    onClick={() => {
+                      setIsSubMenuOpen((isSubMenuOpen) => !isSubMenuOpen);
+                      setIsOpen(true);
                     }}
                   >
-                    {item.subMenu.map((subItem, subIndex) => (
-                      <NavLink
-                        key={subIndex}
-                        to={
-                          dynamicTo && subItem.path.startsWith("/asset/details")
-                            ? dynamicTo
-                            : subItem.path
-                        }
-                        className="link link-subItem"
-                      >
-                        <div className="icon">{subItem.name}</div>
-                      </NavLink>
-                    ))}
-                  </div>
-                )}
-              </div>
-              /*{<div key={index}>
-                {activeDisable ? (
-                  <a>Link</a>
+                    <div className="icon">{item.icon}</div>
+                    <div
+                      style={{ display: isOpen ? "block" : "none" }}
+                      className="link_text "
+                    >
+                      {item.name}
+                    </div>
+                  </NavLink>
                 ) : (
                   <NavLink
-                    to={
-                      dynamicTo && item.path == "/asset/details"
-                        ? dynamicTo
-                        : item.path
-                    }
+                    to={item.path}
                     className={({ isActive }) =>
                       isActive || (isSubMenuOpen && activeSubMenuId === item.id)
                         ? "navbar-item active1 link link-parent"
                         : "navbar-item link link-parent"
                     }
-                    onClick={() => handleNavLinkClick(item)}
-                    disabled="disabled"
+                    onClick={() =>
+                      setActiveLinkId(() => setActiveLinkId(false))
+                    }
                   >
                     <div className="icon">{item.icon}</div>
                     <div
@@ -209,21 +181,32 @@ const Sidebar = ({ children }) => {
                     }}
                   >
                     {item.subMenu.map((subItem, subIndex) => (
-                      <NavLink
-                        key={subIndex}
-                        to={
-                          dynamicTo && subItem.path.startsWith("/asset/details")
-                            ? dynamicTo
-                            : subItem.path
-                        }
-                        className="link link-subItem"
-                      >
-                        <div className="icon">{subItem.name}</div>
-                      </NavLink>
+                      <div key={subIndex}>
+                        {subItem.path == "/asset/details" ? (
+                          <a
+                            style={{ textDecoration: "none" }}
+                            className={`link link-subItem link-custom ${
+                              activeLinkId ? "active" : ""
+                            }`}
+                            onClick={() => handleNavLinkClick(subItem)}
+                          >
+                            Thông tin chung
+                          </a>
+                        ) : (
+                          <NavLink
+                            key={subIndex}
+                            to={subItem.path}
+                            className="link link-subItem"
+                            onClick={() => setActiveLinkId(false)}
+                          >
+                            <div className="icon">{subItem.name}</div>
+                          </NavLink>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}
-              </div> }*/
+              </div>
             );
           })}
         </div>

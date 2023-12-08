@@ -89,6 +89,10 @@ body {
     gap: 15px;
     margin-bottom: 15px;
   }
+  .link-custom {
+    cursor: pointer;
+    font-size: 14px;
+  }
   .link-subItem {
     padding-left: 23px;
   }
@@ -119,6 +123,7 @@ body {
   .link_text {
     font-size: 14px;
     text-wrap: nowrap;
+    line-height: 1;
   }
 }
 .menu-section {
@@ -130,7 +135,7 @@ body {
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   border-radius: 10px;
   .asset__detail {
-    padding: 20px 15px;
+    padding: 20px 45px;
     .asset-image {
       justify-content: center;
       display: flex;
@@ -163,7 +168,7 @@ body {
       width: 100%;
       display: flex;
       margin-bottom: 10px;
-      gap: 15px;
+      gap: 25px;
       &__input {
         width: 100%;
       }
@@ -226,7 +231,8 @@ body {
   overflow: hidden;
   width: 100%;
   h4 {
-    margin: 10px 10px 20px 20px;
+    font-size: 18px;
+    margin: 10px 10px 20px 45px;
   }
   .depri-infor {
     overflow-x: auto;
@@ -240,7 +246,7 @@ body {
       .header-table > th {
         color: #141a4e;
         background-color: #eaf9ff;
-        padding: 15px 35px 15px 30px;
+        padding: 15px 35px 15px 45px;
         text-align: center;
         color: #159712;
       }
@@ -250,7 +256,7 @@ body {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        padding: 15px 35px 15px 30px;
+        padding: 15px 35px 15px 45px;
 
         text-align: center;
         .user-item {
@@ -283,6 +289,16 @@ body {
     }
     .table-child {
       overflow-x: auto; /* Enable vertical scrolling */
+      th {
+        min-width: 200px;
+      }
+      td {
+        text-align: start;
+      }
+      .table-child__content {
+        border-bottom: 1px solid gray;
+        margin-left: -10px;
+      }
     }
     .table-scroll {
       overflow-x: auto;

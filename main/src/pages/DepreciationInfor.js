@@ -41,8 +41,7 @@ const DepreciationInfor = () => {
   const formatNumber = (number) => {
     return number
       ? number.toLocaleString("en-US", {
-          minimumFractionDigits: 3,
-          maximumFractionDigits: 3,
+          maximumFractionDigits: 0,
         })
       : 0;
   };
@@ -67,7 +66,7 @@ const DepreciationInfor = () => {
               <div className="asset-info">
                 <div className="asset-info__input">
                   <label htmlFor="nguyenGia">Nguyên Giá</label>
-                  <input type="text" value={depriData.price} />
+                  <input type="text" value={formatNumber(depriData.price)} />
                 </div>
                 <div className="asset-info__input">
                   <label htmlFor="kieuTaiSan">Thời gian phân bổ</label>
@@ -105,7 +104,7 @@ const DepreciationInfor = () => {
                 <div className="asset-info__input">
                   {" "}
                   <label htmlFor="soSerial">Số ngày tính khấu hao</label>
-                  <input type="text" value="AA" />
+                  <input type="text" value={depriData.amountDate} />
                 </div>
                 <div className="asset-info__input">
                   {" "}
@@ -191,7 +190,10 @@ const DepreciationInfor = () => {
                             <td className="table-child" colSpan={12}>
                               <div className="table-scroll">
                                 {item.depreciationList.map((subItem, index) => (
-                                  <table key={index}>
+                                  <table
+                                    className="table-child__content"
+                                    key={index}
+                                  >
                                     <thead>
                                       <tr className="table-header">
                                         <th>{"Năm " + subItem.year}</th>
@@ -212,49 +214,135 @@ const DepreciationInfor = () => {
                                     </thead>
                                     <tbody>
                                       <tr>
-                                        <td>Số ngày phân bổ</td>
-                                        <td>{subItem.months[1]}</td>
-                                        <td>{subItem.months[2]}</td>
-                                        <td>{subItem.months[3]}</td>
-                                        <td>{subItem.months[4]}</td>
-                                        <td>{subItem.months[5]}</td>
-                                        <td>{subItem.months[6]}</td>
-                                        <td>{subItem.months[7]}</td>
-                                        <td>{subItem.months[8]}</td>
-                                        <td>{subItem.months[9]}</td>
-                                        <td>{subItem.months[10]}</td>
-                                        <td>{subItem.months[11]}</td>
-                                        <td>{subItem.months[12]}</td>
+                                        <td>Số KH trong tháng</td>
                                         <td>
-                                          {subItem.months[1] +
-                                            subItem.months[2] +
-                                            subItem.months[3] +
-                                            subItem.months[4] +
-                                            subItem.months[5] +
-                                            subItem.months[6] +
-                                            subItem.months[7] +
-                                            subItem.months[8] +
-                                            subItem.months[9] +
-                                            subItem.months[10] +
-                                            subItem.months[11] +
-                                            subItem.months[12]}
+                                          {formatNumber(subItem.months[1])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[2])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[3])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[4])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[5])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[6])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[7])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[8])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[9])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[10])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[11])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(subItem.months[12])}
+                                        </td>
+                                        <td>
+                                          {formatNumber(
+                                            subItem.months[1]
+                                              ? subItem.months[1]
+                                              : 0 + subItem.months[2]
+                                              ? subItem.months[2]
+                                              : 0 + subItem.months[3]
+                                              ? subItem.months[3]
+                                              : 0 + subItem.months[4]
+                                              ? subItem.months[4]
+                                              : 0 + subItem.months[5]
+                                              ? subItem.months[5]
+                                              : 0 + subItem.months[6]
+                                              ? subItem.months[6]
+                                              : 0 + subItem.months[7]
+                                              ? subItem.months[7]
+                                              : 0 + subItem.months[8]
+                                              ? subItem.months[8]
+                                              : 0 + subItem.months[9]
+                                              ? subItem.months[9]
+                                              : 0 + subItem.months[10]
+                                              ? subItem.months[10]
+                                              : 0 + subItem.months[11]
+                                              ? subItem.months[11]
+                                              : 0 + subItem.months[12]
+                                              ? subItem.months[12]
+                                              : 0
+                                          )}
                                         </td>
                                       </tr>
-
                                       <tr>
-                                        <td>Số KH trong tháng</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
-                                        <td>100000</td>
+                                        <td>Số ngày phân bổ</td>
+                                        <td>
+                                          {subItem.dates[1]
+                                            ? subItem.dates[1]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[2]
+                                            ? subItem.dates[2]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[3]
+                                            ? subItem.dates[3]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[4]
+                                            ? subItem.dates[4]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[5]
+                                            ? subItem.dates[5]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[6]
+                                            ? subItem.dates[6]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[7]
+                                            ? subItem.dates[7]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[8]
+                                            ? subItem.dates[8]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[9]
+                                            ? subItem.dates[9]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[10]
+                                            ? subItem.dates[10]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[11]
+                                            ? subItem.dates[11]
+                                            : "-"}
+                                        </td>
+                                        <td>
+                                          {subItem.dates[12]
+                                            ? subItem.dates[12]
+                                            : "-"}
+                                        </td>
                                       </tr>
                                     </tbody>
                                   </table>

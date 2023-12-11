@@ -404,23 +404,26 @@ const AssetsDetail = () => {
 
           <div className="importExcel">
             <span>Nhập file excel:</span>
-            <label htmlFor="fileInput" className="customFileInput">
-              <FaRegFileAlt />
-              File
-            </label>
-            <input
-              id="fileInput"
-              type="file"
-              accept=".xls, .xlsx"
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-            />
-            {excelData && (
-              <div>
-                <h2>Imported Excel Data</h2>
-                <pre>{JSON.stringify(excelData, null, 2)}</pre>
-              </div>
-            )}
+            <div>
+              {" "}
+              <label htmlFor="fileInput" className="customFileInput">
+                <FaRegFileAlt />
+                File
+              </label>
+              <input
+                id="fileInput"
+                type="file"
+                accept=".xls, .xlsx"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+              {excelData && (
+                <div>
+                  <h2>Imported Excel Data</h2>
+                  <pre>{JSON.stringify(excelData, null, 2)}</pre>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div class="table-container">

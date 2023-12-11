@@ -159,8 +159,7 @@ button {
 
       .importExcel {
         margin-left: auto;
-        display: flex;
-        flex-direction: column;
+
         span {
           color: #159712;
           font-weight: 300;
@@ -520,7 +519,7 @@ button {
     background-position: 140px;
   }
 }
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .date-title {
     position: relative;
   }

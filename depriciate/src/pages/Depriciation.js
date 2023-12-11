@@ -135,11 +135,7 @@ const Depriciation = () => {
             </div> */}
             <div className="content-sellection__state">
               <div className="state-dropdown">
-                <div
-                  style={{
-                    width: "300px",
-                  }}
-                >
+                <div className="sellect-dept">
                   <Select
                     mode="multiple"
                     style={{

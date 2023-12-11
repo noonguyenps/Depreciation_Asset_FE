@@ -251,33 +251,45 @@ const DepreciationInfor = () => {
                                         <td>
                                           {formatNumber(subItem.months[12])}
                                         </td>
+
                                         <td>
                                           {formatNumber(
-                                            subItem.months[1]
+                                            (subItem.months[1]
                                               ? subItem.months[1]
-                                              : 0 + subItem.months[2]
-                                              ? subItem.months[2]
-                                              : 0 + subItem.months[3]
-                                              ? subItem.months[3]
-                                              : 0 + subItem.months[4]
-                                              ? subItem.months[4]
-                                              : 0 + subItem.months[5]
-                                              ? subItem.months[5]
-                                              : 0 + subItem.months[6]
-                                              ? subItem.months[6]
-                                              : 0 + subItem.months[7]
-                                              ? subItem.months[7]
-                                              : 0 + subItem.months[8]
-                                              ? subItem.months[8]
-                                              : 0 + subItem.months[9]
-                                              ? subItem.months[9]
-                                              : 0 + subItem.months[10]
-                                              ? subItem.months[10]
-                                              : 0 + subItem.months[11]
-                                              ? subItem.months[11]
-                                              : 0 + subItem.months[12]
-                                              ? subItem.months[12]
-                                              : 0
+                                              : 0) +
+                                              (subItem.months[2]
+                                                ? subItem.months[2]
+                                                : 0) +
+                                              (subItem.months[3]
+                                                ? subItem.months[3]
+                                                : 0) +
+                                              (subItem.months[4]
+                                                ? subItem.months[4]
+                                                : 0) +
+                                              (subItem.months[5]
+                                                ? subItem.months[5]
+                                                : 0) +
+                                              (subItem.months[6]
+                                                ? subItem.months[6]
+                                                : 0) +
+                                              (subItem.months[7]
+                                                ? subItem.months[7]
+                                                : 0) +
+                                              (subItem.months[8]
+                                                ? subItem.months[8]
+                                                : 0) +
+                                              (subItem.months[9]
+                                                ? subItem.months[9]
+                                                : 0) +
+                                              (subItem.months[10]
+                                                ? subItem.months[10]
+                                                : 0) +
+                                              (subItem.months[11]
+                                                ? subItem.months[11]
+                                                : 0) +
+                                              (subItem.months[12]
+                                                ? subItem.months[12]
+                                                : 0)
                                           )}
                                         </td>
                                       </tr>

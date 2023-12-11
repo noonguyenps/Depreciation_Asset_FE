@@ -87,6 +87,9 @@ body {
       padding: 8px 5px;
     }
   }
+  .sellect-dept {
+    width: 300px;
+  }
   .content-sellection {
     display: flex;
     gap: 10px;
@@ -105,6 +108,7 @@ body {
         gap: 5px;
         width: 100px;
         margin-top: 5px;
+
         p {
           margin: auto;
         }
@@ -317,5 +321,11 @@ body {
         }
       }
     }
+  }
+}
+
+@media (max-width: 1124px) {
+  .sellect-dept {
+    width: 200px !important;
   }
 }

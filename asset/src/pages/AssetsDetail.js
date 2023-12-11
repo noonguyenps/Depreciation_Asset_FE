@@ -37,6 +37,8 @@ const AssetsDetail = () => {
   //typeAsset
   const [assetType, setAssetType] = useState([]);
   const [selectedValue, setSelectedValue] = useState(-1); // 'all' or some default value
+  //group
+  const [assetGroup, setAssetGroup] = useState([]);
 
   //inforTotal
   const [totalAsset, setTotalAsset] = useState(0); // 'all' or some default value
@@ -96,6 +98,22 @@ const AssetsDetail = () => {
         console.log("AssetType", data);
         // setTotalPage(data.data.totalPage);
         setAssetType(data);
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, []);
+  //Group
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/asset/group`);
+
+        const data = await response.json();
+        console.log("group", data);
+        // setTotalPage(data.data.totalPage);
+        setAssetGroup(data);
+        // setAssetType()
       } catch (error) {}
     };
 
@@ -161,6 +179,7 @@ const AssetsDetail = () => {
 
     fetchData();
   }, []);
+
   console.log("department", department);
   useEffect(() => {
     setCurrentPage(0);
@@ -225,6 +244,10 @@ const AssetsDetail = () => {
   const toggleInputs = () => {
     setShowInputs(!showInputs);
     console.log("showInputs", showInputs);
+  };
+  const handleChangeGroup = (e) => {
+    setSelectedGroupValue(e);
+    setAssetType(assetGroup.filter((item) => item.id == e)[0].listAssetType);
   };
   return (
     <div className="asset__content">
@@ -298,16 +321,16 @@ const AssetsDetail = () => {
             <div className="state-dropdown">
               <Space wrap>
                 <Select
-                  value={selectedDeptValue}
+                  value={selectedGroupValue}
                   style={{
                     width: 120,
                   }}
-                  onChange={(e) => setSelectedGroupValue(e)}
+                  onChange={(e) => handleChangeGroup(e)}
                   dropdownMatchSelectWidth={false}
                 >
                   <Option value={-1}>Tất cả</Option>
                   {!loading &&
-                    department?.listDepartment?.map((asset, key) => (
+                    assetGroup?.map((asset, key) => (
                       <Option key={asset.id} value={asset.id}>
                         {asset.name}
                       </Option>

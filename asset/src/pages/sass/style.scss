@@ -233,6 +233,9 @@ button {
             &-sellect {
               display: flex;
             }
+            &-label {
+              min-width: 80px;
+            }
             &-title {
               display: flex;
               div {
@@ -515,5 +518,38 @@ button {
   40%,
   100% {
     background-position: 140px;
+  }
+}
+@media (max-width: 1080px) {
+  .date-title {
+    position: relative;
+  }
+  .date input {
+    width: 120px !important;
+  }
+  .date-input {
+    content: "";
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+  }
+  .date-title::before {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    z-index: 999;
+  }
+  .date-title {
+    display: flex;
+    flex-direction: column;
+    width: 120px;
+  }
+  .date-sellect:hover .date-input {
+    display: block;
   }
 }

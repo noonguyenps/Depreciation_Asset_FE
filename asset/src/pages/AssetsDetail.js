@@ -47,6 +47,8 @@ const AssetsDetail = () => {
   const [department, setDepartment] = useState("");
   const [selectedDeptValue, setSelectedDeptValue] = useState(-1); // 'all' or some default value
   const [selectedGroupValue, setSelectedGroupValue] = useState(-1); // 'all' or some default value
+  //responsive input
+  const [showInputs, setShowInputs] = useState(false);
 
   const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -67,7 +69,7 @@ const AssetsDetail = () => {
         setTotalPage(data.data.totalPage);
         setAssetData(data);
       } catch (error) {
-        // console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false); // Set loading to false regardless of success or failure
       }
@@ -101,8 +103,6 @@ const AssetsDetail = () => {
   }, []);
   //Count Asset
   useEffect(() => {
-    let timer = null;
-
     const fetchData = async () => {
       try {
         const response = await fetch(`http://localhost:8080/api/asset/count`);
@@ -221,6 +221,10 @@ const AssetsDetail = () => {
           maximumFractionDigits: 3,
         })
       : 0;
+  };
+  const toggleInputs = () => {
+    setShowInputs(!showInputs);
+    console.log("showInputs", showInputs);
   };
   return (
     <div className="asset__content">
@@ -376,16 +380,18 @@ const AssetsDetail = () => {
                 </span>
                 <div className="date-sellect">
                   <div className="date-title">
-                    <div>Từ ngày</div>
+                    <div className="date-label">Từ ngày</div>
                     <input
+                      className="date-input"
                       type="date"
                       value={fromDate}
                       onChange={(e) => handleDateChange(e, "from")}
                     />
                   </div>
                   <div className="date-title">
-                    <div>Đến ngày</div>
+                    <div className="date-label">Đến ngày</div>
                     <input
+                      className="date-input"
                       type="date"
                       value={toDate}
                       onChange={(e) => handleDateChange(e, "to")}

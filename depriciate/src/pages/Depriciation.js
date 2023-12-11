@@ -26,8 +26,6 @@ const Depriciation = () => {
   const [submenuOpen, setSubmenuOpen] = useState(false);
 
   useEffect(() => {
-    let timer = null;
-
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -50,9 +48,6 @@ const Depriciation = () => {
     setViewYear(sellectedYear);
   };
 
-  const handleMonthChange = (month) => {
-    setViewMonth(month);
-  };
   const formatNumber = (number) => {
     return number
       ? number.toLocaleString("en-US", {
@@ -61,9 +56,6 @@ const Depriciation = () => {
       : 0;
   };
 
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
-  };
   const toggleSubmenu = () => {
     setSubmenuOpen(!submenuOpen);
   };
@@ -96,9 +88,6 @@ const Depriciation = () => {
   }
   const handleDeptChange = (value) => {
     const isSelectAll = value.includes(0);
-
-    // If "Tất cả" is selected, set the selected values to [0] (All)
-    // If individual options (A, B, C) are selected, deselect "All"
     if (isSelectAll && value.length > 1) {
       setSelectedDepartment(value.filter((v) => v !== 0));
     } else {

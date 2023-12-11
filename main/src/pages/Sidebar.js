@@ -20,9 +20,10 @@ const Sidebar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
   const [activeSubMenuId, setActiveSubMenuId] = useState(null); // State to track active submenu item
-  const [dynamicTo, setDynamicTo] = useState("");
-  const [localStoredId, setLocalStoredId] = useState("");
+  const [loading, setLoading] = useState(true);
+
   const [activeLinkId, setActiveLinkId] = useState(null);
+
   let location = useLocation();
 
   const navigate = useNavigate();

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaBoxOpen } from "react-icons/fa6";
 import ReactPaginate from "react-paginate";
 import "./sass/style.scss";
-import { Select, Space } from "antd";
+import { Select, Space, Checkbox } from "antd";
 import { LuFilter } from "react-icons/lu";
 
 import { MdCalculate, MdArrowDropDown, MdArrowRight } from "react-icons/md";
@@ -12,6 +12,8 @@ const Depriciation = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [department, setDepartment] = useState(0);
+  const [selectedDepartment, setSelectedDepartment] = useState(0);
+  const [selectAll, setSelectAll] = useState(false);
 
   const [assetsPerPage, setAssetsPerPage] = useState(5);
   const [totalPage, setTotalPage] = useState(0);
@@ -23,19 +25,16 @@ const Depriciation = () => {
   const currentYear = new Date().getFullYear();
   const [submenuOpen, setSubmenuOpen] = useState(false);
 
-  console.log("yearOfDate", currentYear);
-
   useEffect(() => {
     let timer = null;
 
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/depreciation/history/dept?&year=${viewYear}&ids=${department}`
+          `http://localhost:8080/api/depreciation/history/dept?&year=${viewYear}&ids=${selectedDepartment}`
         );
 
         const data = await response.json();
-        console.log("data", data);
         // setTotalPage(data.data.totalPage);
         setDepriData(data);
         setLoading(false);
@@ -45,7 +44,7 @@ const Depriciation = () => {
     };
 
     fetchData();
-  }, [currentPage, viewYear, department]);
+  }, [currentPage, viewYear, selectedDepartment]);
   console.log("depriData", depriData);
   const handleYearChange = (sellectedYear) => {
     setViewYear(sellectedYear);
@@ -62,33 +61,6 @@ const Depriciation = () => {
       : 0;
   };
 
-  const monthlyColumns = [
-    <th key="3">Mức trích KH tháng</th>,
-    <th key="4">Luỹ kế kỳ trước</th>,
-    <th key="5">Số KH kỳ này </th>,
-    <th key="6">Luỹ kế </th>,
-    <th key="7">Giá trị còn lại</th>,
-  ];
-
-  const yearlyColumns = [
-    <th key="3">KH luỹ kế đầu năm</th>,
-    <th key="4">Giá trị còn lại đầu năm</th>,
-    <th key="5">Giá trị KH tháng 1 </th>,
-    <th key="6">Giá trị KH tháng 2 </th>,
-    <th key="7">Giá trị KH tháng 3 </th>,
-    <th key="8">Giá trị KH tháng 4 </th>,
-    <th key="9">Giá trị KH tháng 5 </th>,
-    <th key="10">Giá trị KH tháng 6 </th>,
-    <th key="11">Giá trị KH tháng 7 </th>,
-    <th key="12">Giá trị KH tháng 8 </th>,
-    <th key="13">Giá trị KH tháng 9 </th>,
-    <th key="14">Giá trị KH tháng 10 </th>,
-    <th key="15">Giá trị KH tháng 11 </th>,
-    <th key="16">Giá trị KH tháng 12 </th>,
-
-    // Thêm các tháng khác tùy thuộc vào nhu cầu
-  ];
-
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
@@ -103,14 +75,16 @@ const Depriciation = () => {
         );
 
         const data = await response.json();
-        console.log("depart", data);
         setDepartment(data);
       } catch (error) {}
     };
 
     fetchData();
   }, []);
-  const options = [];
+  const options = [
+    // Default option with value 0
+    { value: 0, label: "Tất cả" },
+  ];
   if (department?.listDepartment) {
     for (let i = 0; i < department.listDepartment.length; i++) {
       const asset = department.listDepartment[i];
@@ -121,8 +95,17 @@ const Depriciation = () => {
     }
   }
   const handleDeptChange = (value) => {
-    console.log(`selected ${value}`);
+    const isSelectAll = value.includes(0);
+
+    // If "Tất cả" is selected, set the selected values to [0] (All)
+    // If individual options (A, B, C) are selected, deselect "All"
+    if (isSelectAll && value.length > 1) {
+      setSelectedDepartment(value.filter((v) => v !== 0));
+    } else {
+      setSelectedDepartment(isSelectAll ? [0] : value.filter((v) => v !== 0));
+    }
   };
+
   return (
     <div className="depri-container">
       <div className="content-top">
@@ -163,12 +146,20 @@ const Depriciation = () => {
             </div> */}
             <div className="content-sellection__state">
               <div className="state-dropdown">
-                <div style={{ width: "100px" }}>
+                <div
+                  style={{
+                    width: "300px",
+                  }}
+                >
                   <Select
-                    mode="tags"
+                    mode="multiple"
                     style={{
                       width: "100%",
                     }}
+                    allowClear
+                    placeholder="Please select"
+                    defaultValue={[0]}
+                    value={selectedDepartment}
                     onChange={handleDeptChange}
                     tokenSeparators={[","]}
                     options={options}

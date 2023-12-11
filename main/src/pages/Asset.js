@@ -10,13 +10,10 @@ const Asset = () => {
 
   useEffect(() => {
     let timer = null;
-    const storedId = localStorage.getItem("currentAssetId");
 
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/asset/${storedId}`
-        );
+        const response = await fetch(`http://localhost:8080/api/asset/${id}`);
 
         const data = await response.json();
         // setTotalPage(data.data.totalPage);
@@ -34,7 +31,7 @@ const Asset = () => {
     if (!isNaN(id)) {
       localStorage.setItem("currentAssetId", id);
     }
-  }, []);
+  }, [id]);
   const formatNumber = (number) => {
     return number
       ? number.toLocaleString("en-US", {
@@ -50,10 +47,7 @@ const Asset = () => {
           <div className="asset__detail">
             <div className="asset-image">
               <div class="image-container">
-                <img
-                  src="https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=2944&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt=""
-                />
+                <img src={assetData.assetImage} alt="" />
                 <div class="image-border"></div>
               </div>
             </div>

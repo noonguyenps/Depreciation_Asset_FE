@@ -83,7 +83,6 @@ const Sidebar = ({ children }) => {
       const updatedAssetId = storedId
         ? `${item.path}/${storedId}`.replace(/\s+/g, "")
         : item.path;
-      setDynamicTo(updatedAssetId);
       setLocalStoredId(storedId);
       console.log("updatedAssetId", updatedAssetId);
       // setActiveLinkId(item.id);

@@ -14,6 +14,8 @@ import { FaRegFileAlt } from "react-icons/fa";
 import { Select, Space } from "antd";
 
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AssetsDetail = () => {
   const [assetData, setAssetData] = useState(null);
@@ -51,7 +53,8 @@ const AssetsDetail = () => {
   const [selectedGroupValue, setSelectedGroupValue] = useState(-1); // 'all' or some default value
   //responsive input
   const [showInputs, setShowInputs] = useState(false);
-
+  //reload ImportExcel
+  const [excelImported, setExcelImported] = useState(false);
   const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -85,6 +88,7 @@ const AssetsDetail = () => {
     userDebounce,
     selectedValue,
     selectedDeptValue,
+    excelImported,
   ]);
 
   useEffect(() => {
@@ -131,7 +135,7 @@ const AssetsDetail = () => {
     };
 
     fetchData();
-  }, []);
+  }, [excelImported]);
   //Count Depreciate
   useEffect(() => {
     let timer = null;
@@ -186,12 +190,13 @@ const AssetsDetail = () => {
   }, [fromDateDebounce, toDateDebounce]);
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    console.log(file);
-    const confirmed = window.confirm(
-      "Are you sure you want to import this Excel file?"
-    );
+    fileInput.value = "";
 
-    if (confirmed && file) {
+    const loadingToastId = toast.info("Đang tải dữ liệu...", {
+      autoClose: false,
+    });
+
+    if (file) {
       try {
         const formData = new FormData();
         formData.append("file", file);
@@ -205,13 +210,17 @@ const AssetsDetail = () => {
         );
 
         if (response.ok) {
+          toast.dismiss(loadingToastId);
           const result = await response.json();
-          console.log("Success:", result.Message);
+          toast.success("Đã thêm dữ liệu thành công!", { autoClose: 3000 });
+          setExcelImported(!excelImported);
         } else {
-          console.error("Failed to upload Excel data.");
+          toast.dismiss(loadingToastId);
+          toast.error("Tải dữ liệu thất bại.");
         }
       } catch (error) {
-        console.error("Error:", error);
+        toast.dismiss(loadingToastId);
+        toast.error("Tải dữ liệu thất bại.");
       }
     }
   };
@@ -236,8 +245,7 @@ const AssetsDetail = () => {
   const formatNumber = (number) => {
     return number
       ? number.toLocaleString("en-US", {
-          minimumFractionDigits: 3,
-          maximumFractionDigits: 3,
+          maximumFractionDigits: 0,
         })
       : 0;
   };
@@ -251,6 +259,11 @@ const AssetsDetail = () => {
   };
   return (
     <div className="asset__content">
+      <>
+        {" "}
+        <ToastContainer />
+      </>
+
       <div className="content-top">
         <div className="content-top__header">
           <div className="content-top__title">
@@ -437,7 +450,7 @@ const AssetsDetail = () => {
                 id="fileInput"
                 type="file"
                 accept=".xls, .xlsx"
-                onChange={handleFileChange}
+                onChange={(e) => handleFileChange(e)}
                 style={{ display: "none" }}
               />
               {excelData && (

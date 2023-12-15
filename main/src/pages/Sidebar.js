@@ -14,7 +14,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../components/assets/logo.jpg";
-const Depriciation = React.lazy(() => import("depriciation/Depriciation"));
 
 const Sidebar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);

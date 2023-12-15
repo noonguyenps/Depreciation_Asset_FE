@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom"; // Import useParams
 import "./sass/style.scss";
 import Loading from "../components/Loading";
 import { FaAngleDown, FaAngleRight } from "react-icons/fa";
-
+import "./sass/depreUpgrade.scss";
+import NoUpgradeData from "../components/NoUpgradeData";
 const DepreciationUpgrade = () => {
   const [loading, setLoading] = useState(false);
   const [depriData, setDepriData] = useState(null);
@@ -41,7 +42,7 @@ const DepreciationUpgrade = () => {
       <div className="asset__contain">
         <h2>Thông tin nâng cấp</h2>
         <div className="depri__content">
-          {depriData && (
+          {depriData?.updateHistoryResponses.length > 0 ? (
             <>
               <div className="asset__detail">
                 <div className="asset-info">
@@ -132,6 +133,8 @@ const DepreciationUpgrade = () => {
                 </div>
               </div>
             </>
+          ) : (
+            <NoUpgradeData />
           )}
         </div>
       </div>

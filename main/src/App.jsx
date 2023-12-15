@@ -1,20 +1,22 @@
-import React, { Suspense, useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import ReactDOM from "react-dom";
 import { FallbackComponent } from "./components/FallbackComponent";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { createRoot } from "react-dom/client";
 
 import "./index.css";
 import Sidebar from "./pages/Sidebar";
 import Home from "./pages/Home";
 import Asset from "./pages/Asset";
-import Charts from "./pages/Charts";
-import DepreciationInfor from "./pages/DepreciationInfor";
 import Manage from "./pages/Manage";
-import DepreciationUpgrade from "./pages/DepreciationUpgrade";
 
-const AssetsDetail = React.lazy(() => import("asset/AssetsDetail"));
-const Depriciation = React.lazy(() => import("depriciation/Depriciation"));
+const AssetsDetail = lazy(() => import("asset/AssetsDetail"));
 
+const Depreciation = lazy(() => import("depreciation/Depreciation"));
+const DepreciationInfor = lazy(() => import("depreciation/DepreciationInfor"));
+const DepreciationUpgrade = lazy(() =>
+  import("depreciation/DepreciationUpgrade")
+);
 const App = () => {
   return (
     <BrowserRouter>
@@ -33,9 +35,8 @@ const App = () => {
               element={<DepreciationUpgrade />}
             />
             <Route path="/asset/depreciation-manage" element={<Manage />} />
-            <Route path="/depreciation" element={<Depriciation />} />
-            <Route path="/depriciation/list" element={<Depriciation />} />
-            <Route path="/depriciation/charts" element={<Charts />} />
+            <Route path="/depreciation" element={<Depreciation />} />
+            <Route path="/depreciation/list" element={<Depreciation />} />
           </Routes>
         </Suspense>
       </Sidebar>
@@ -43,4 +44,5 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("app"));
+const root = createRoot(document.getElementById("app")); // createRoot(container!) if you use TypeScript
+root.render(<App tab="home" />);

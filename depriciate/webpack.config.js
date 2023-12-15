@@ -64,10 +64,14 @@ module.exports = (_, argv) => ({
 
   plugins: [
     new ModuleFederationPlugin({
-      name: "depriciation",
+      name: "depreciation",
       filename: "remoteEntry.js",
       remotes: {},
-      exposes: { "./Depriciation": "./src/pages/Depriciation" },
+      exposes: {
+        "./Depreciation": "./src/pages/Depreciation",
+        "./DepreciationInfor": "./src/pages/DepreciationInfor",
+        "./DepreciationUpgrade": "./src/pages/DepreciationUpgrade",
+      },
       shared: {
         ...deps,
         react: {

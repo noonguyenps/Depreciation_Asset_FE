@@ -4,10 +4,13 @@ import ReactPaginate from "react-paginate";
 import "./sass/style.scss";
 import { Select, Space, Checkbox } from "antd";
 import { LuFilter } from "react-icons/lu";
+import { RiInstallLine } from "react-icons/ri";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 import { MdCalculate, MdArrowDropDown, MdArrowRight } from "react-icons/md";
 
-const Depriciation = () => {
+const Depreciation = () => {
   const [depriData, setDepriData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
@@ -18,9 +21,7 @@ const Depriciation = () => {
   const [assetsPerPage, setAssetsPerPage] = useState(5);
   const [totalPage, setTotalPage] = useState(0);
   // Dữ liệu mẫu
-  const [viewMode, setViewMode] = useState("year");
   const [viewYear, setViewYear] = useState(2016);
-  const [viewMonth, setViewMonth] = useState(8);
 
   const currentYear = new Date().getFullYear();
   const [submenuOpen, setSubmenuOpen] = useState(false);
@@ -93,6 +94,48 @@ const Depriciation = () => {
     } else {
       setSelectedDepartment(isSelectAll ? [0] : value.filter((v) => v !== 0));
     }
+  };
+
+  const handleExportExcel = async () => {
+    confirmAlert({
+      title: "Xác nhận",
+      message: "Bạn có chắc chắn muốn xuất dữ liệu ra Excel không?",
+      buttons: [
+        {
+          label: "Có",
+          onClick: async () => {
+            try {
+              const response = await fetch(
+                `http://localhost:8080/api/depreciation/history/dept/export/excel?year=${viewYear}&ids=${selectedDepartment}`
+              );
+
+              if (response.ok) {
+                // Xử lý khi API trả về dữ liệu thành công, ví dụ: download file Excel
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(new Blob([blob]));
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "exportedFile.xlsx"; // Tên file tải về
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+              } else {
+                console.error("Failed to fetch data from the API.");
+              }
+            } catch (error) {
+              console.error("Error:", error);
+            }
+          },
+        },
+        {
+          label: "Không",
+          onClick: () => {
+            // Xử lý khi người dùng chọn "Không"
+          },
+        },
+      ],
+    });
   };
 
   return (
@@ -181,6 +224,11 @@ const Depriciation = () => {
                   </select>
                 </div>
               </div>
+            </div>
+            <div style={{ width: "50px" }}>
+              <button class="Button" onClick={handleExportExcel}>
+                <RiInstallLine size={30} />
+              </button>
             </div>
           </div>
         </div>
@@ -346,4 +394,4 @@ const Depriciation = () => {
   );
 };
 
-export default Depriciation;
+export default Depreciation;

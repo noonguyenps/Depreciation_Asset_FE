@@ -77,7 +77,7 @@ const DepreciationInfor = () => {
                 <div className="asset-info__input">
                   {" "}
                   <label htmlFor="nhomTaiSan">Ngày bắt đầu phân bổ</label>
-                  <input type="text" value={depriData.fromDate} />
+                  <input type="date" value={depriData.fromDate} />
                 </div>
                 <div className="asset-info__input">
                   {" "}
@@ -142,8 +142,8 @@ const DepreciationInfor = () => {
                   <tr className="header-table">
                     <th>Người sử dụng</th>
                     <th>Phòng ban sử dụng</th>
-                    <th>Ngày bắt đầu sử dụng</th>
-                    <th>Ngày kết thúc</th>
+                    <th>Ngày bắt đầu phân bổ</th>
+                    <th>Ngày kết thúc phân bổ</th>
                     <th>Luỹ kế phòng ban</th>
                     <th></th>
                   </tr>
@@ -159,7 +159,6 @@ const DepreciationInfor = () => {
                                 <div className="image">
                                   <img src={item.userResponse.image} alt="" />
                                 </div>
-
                                 {item.userResponse.fullName}
                               </div>
                             </td>

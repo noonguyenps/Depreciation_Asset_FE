@@ -68,7 +68,7 @@ module.exports = (_, argv) => ({
       filename: "remoteEntry.js",
       remotes: {
         asset: "asset@http://localhost:3001/remoteEntry.js",
-        depriciation: "depriciation@http://localhost:3002/remoteEntry.js",
+        depreciation: "depreciation@http://localhost:3002/remoteEntry.js",
       },
       exposes: {},
       shared: {

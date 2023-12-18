@@ -4,6 +4,7 @@ import "./sass/style.scss";
 import "./sass/manage.scss";
 
 import { FaAngleDown, FaAngleRight } from "react-icons/fa";
+import NoUpgradeData from "../components/NoUpgradeData";
 
 const Manage = () => {
   const [loading, setLoading] = useState(false);
@@ -36,7 +37,7 @@ const Manage = () => {
       <div className="asset__contain">
         <h2>Thông tin quản lý</h2>
         <div className="depri__content">
-          {depriData && (
+          {depriData?.updateHistoryResponses.length > 0 ? (
             <>
               <div className="asset__detail">
                 <div className="asset-info">
@@ -165,6 +166,8 @@ const Manage = () => {
                 </div>
               </div>
             </>
+          ) : (
+            <NoUpgradeData />
           )}
         </div>
       </div>

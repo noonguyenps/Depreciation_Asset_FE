@@ -85,7 +85,15 @@ const Asset = () => {
               <div className="asset-info__input">
                 {" "}
                 <label htmlFor="ngayMua">Ngày sử dụng</label>
-                <input type="date" value={assetData.dateUsed} disabled />
+                {assetData.dateUsed ? (
+                  <input type="date" value={assetData.dateUsed} disabled />
+                ) : (
+                  <input
+                    type="text"
+                    value="Tài sản chưa được sử dụng"
+                    disabled
+                  />
+                )}
               </div>
             </div>
             <div className="asset-info">

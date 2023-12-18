@@ -134,7 +134,7 @@ const DepreciationUpgrade = () => {
               </div>
             </>
           ) : (
-            <NoUpgradeData />
+            <NoUpgradeData content="Chưa có lịch sử nâng cấp." />
           )}
         </div>
       </div>

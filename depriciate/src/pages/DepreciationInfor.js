@@ -56,33 +56,41 @@ const DepreciationInfor = () => {
                 <div className="asset-info__input">
                   {" "}
                   <label htmlFor="maTaiSan">Mã tài sản</label>
-                  <input type="text" value={depriData.assetId} />
+                  <input type="text" value={depriData.assetId} disabled />
                 </div>
                 <div className="asset-info__input">
                   <label htmlFor="tenTaiSan">Tên Tài Sản</label>
-                  <input type="text" value={depriData.assetName} />
+                  <input type="text" value={depriData.assetName} disabled />
                 </div>
               </div>
               <div className="asset-info">
                 <div className="asset-info__input">
                   <label htmlFor="nguyenGia">Nguyên Giá</label>
-                  <input type="text" value={formatNumber(depriData.price)} />
+                  <input
+                    type="text"
+                    value={formatNumber(depriData.price)}
+                    disabled
+                  />
                 </div>
                 <div className="asset-info__input">
                   <label htmlFor="kieuTaiSan">Thời gian phân bổ</label>
-                  <input type="text" value={depriData.amountMonth + " tháng"} />
+                  <input
+                    type="text"
+                    value={depriData.amountMonth + " tháng"}
+                    disabled
+                  />
                 </div>
               </div>
               <div className="asset-info">
                 <div className="asset-info__input">
                   {" "}
                   <label htmlFor="nhomTaiSan">Ngày bắt đầu phân bổ</label>
-                  <input type="date" value={depriData.fromDate} />
+                  <input type="date" value={depriData.fromDate} disabled />
                 </div>
                 <div className="asset-info__input">
                   {" "}
                   <label htmlFor="ngayMua">Ngày kết thúc phân bổ</label>
-                  <input type="date" value={depriData.expDate} />
+                  <input type="date" value={depriData.expDate} disabled />
                 </div>
               </div>
               <div className="asset-info">
@@ -92,11 +100,12 @@ const DepreciationInfor = () => {
                   <input
                     type="text"
                     value={formatNumber(depriData.valuePrev)}
+                    disabled
                   />
                 </div>
                 <div className="asset-info__input">
                   <label htmlFor="donViTinh">Số ngày trong tháng này</label>
-                  <input type="text" value={depriData.changePrice} />
+                  <input type="text" value={depriData.changePrice} disabled />
                 </div>
               </div>
 
@@ -104,12 +113,16 @@ const DepreciationInfor = () => {
                 <div className="asset-info__input">
                   {" "}
                   <label htmlFor="soSerial">Số ngày tính khấu hao</label>
-                  <input type="text" value={depriData.amountDate} />
+                  <input type="text" value={depriData.amountDate} disabled />
                 </div>
                 <div className="asset-info__input">
                   {" "}
                   <label htmlFor="soSerial">Số khấu hao kỳ này</label>
-                  <input type="text" value={formatNumber(depriData.valuePre)} />
+                  <input
+                    type="text"
+                    value={formatNumber(depriData.valuePre)}
+                    disabled
+                  />
                 </div>
               </div>
               <div className="asset-info">
@@ -129,6 +142,7 @@ const DepreciationInfor = () => {
                   <input
                     type="text"
                     value={formatNumber(depriData.totalValue)}
+                    disabled
                   />
                 </div>
               </div>

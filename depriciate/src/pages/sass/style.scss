@@ -208,10 +208,39 @@ body {
         }
       }
       td {
+        position: relative;
         max-width: 400px; /* Set the desired max-width */
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+      }
+      .popup {
+        position: absolute;
+        top: 5px;
+        left: 0;
+        display: none;
+        font-size: 10px;
+        padding: 5px;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 999999;
+        white-space: normal;
+      }
+      .popup::after {
+        content: "";
+        position: absolute;
+
+        border-style: solid;
+        border-width: 10px 10px 0 10px;
+        border-color: #fff transparent transparent transparent;
+
+        left: 10px;
+        top: 100%;
+      }
+
+      td:hover .popup {
+        display: block;
       }
       .main-row td {
         color: #2e98d1;
@@ -328,8 +357,8 @@ body {
   position: relative;
   border: none;
   color: #fff;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   text-align: center;
   background: linear-gradient(90deg, #03a9f4, #159712, #03a9f4, #03a9f4);
   background-size: 300%;
@@ -358,7 +387,15 @@ body {
 .Button:hover::before {
   filter: blur(20px);
 }
-
+// .ant-select-selector {
+//   border-radius: 0px !important;
+// }
+// .ant-select-open {
+//   border-radius: 0px !important;
+// }
+.tableRowTransition {
+  transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
 @keyframes animated {
   0% {
     background-position: 0%;

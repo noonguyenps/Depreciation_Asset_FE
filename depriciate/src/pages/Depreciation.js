@@ -7,11 +7,12 @@ import { LuFilter } from "react-icons/lu";
 import { RiInstallLine } from "react-icons/ri";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import classnames from "classnames";
 
 import { MdCalculate, MdArrowDropDown, MdArrowRight } from "react-icons/md";
 
 const Depreciation = () => {
-  const [depriData, setDepriData] = useState(null);
+  const [depriData, setDepriData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [department, setDepartment] = useState(0);
@@ -115,7 +116,7 @@ const Depreciation = () => {
                 const url = window.URL.createObjectURL(new Blob([blob]));
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = "exportedFile.xlsx"; // Tên file tải về
+                a.download = `KhauHao_${viewYear}.xlsx`; // Tên file tải về
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -143,10 +144,6 @@ const Depreciation = () => {
       <div className="content-top">
         <div className="content-top__header">
           <div className="content-top__title">
-            <div>
-              <MdCalculate size={"2em"} fill="black" />
-            </div>
-
             <h2>Bảng tính và phân bổ</h2>
           </div>
 
@@ -196,38 +193,39 @@ const Depreciation = () => {
               </div>
             </div>
             <div className="content-top__option">
-              <button
+              {/* <button
                 className="button-view"
                 style={{ width: "120px", fontSize: "12px" }}
               >
                 Trích khấu hao
-              </button>
+              </button> */}
               <div>
-                <div>
-                  <select
-                    value={viewYear}
-                    onChange={(e) => handleYearChange(e.target.value)}
-                    className="option-sellect"
-                    style={{ width: "130px" }}
-                  >
-                    {" "}
-                    <option value={2015}>Năm: 2015</option>
-                    <option value={2016}>Năm: 2016</option>
-                    <option value={2017}>Năm: 2017</option>
-                    <option value={2018}>Năm: 2018</option>
-                    <option value={2019}>Năm: 2019</option>
-                    <option value={2020}>Năm: 2020</option>
-                    <option value={2021}>Năm: 2021</option>
-                    <option value={2022}>Năm: 2022</option>
-                    <option value={2023}>Năm: 2023</option>
-                    {/* Thêm các năm khác tùy thuộc vào nhu cầu */}
-                  </select>
+                <div className="state-dropdown">
+                  <Space wrap>
+                    <Select
+                      value={viewYear}
+                      onChange={handleYearChange}
+                      className="option-select"
+                      style={{ width: "130px" }}
+                    >
+                      <Option value={2015}>Năm: 2015</Option>
+                      <Option value={2016}>Năm: 2016</Option>
+                      <Option value={2017}>Năm: 2017</Option>
+                      <Option value={2018}>Năm: 2018</Option>
+                      <Option value={2019}>Năm: 2019</Option>
+                      <Option value={2020}>Năm: 2020</Option>
+                      <Option value={2021}>Năm: 2021</Option>
+                      <Option value={2022}>Năm: 2022</Option>
+                      <Option value={2023}>Năm: 2023</Option>
+                      {/* Thêm các năm khác tùy thuộc vào nhu cầu */}
+                    </Select>
+                  </Space>
                 </div>
               </div>
             </div>
-            <div style={{ width: "50px" }}>
+            <div style={{ width: "40px" }}>
               <button class="Button" onClick={handleExportExcel}>
-                <RiInstallLine size={30} />
+                <RiInstallLine size={25} />
               </button>
             </div>
           </div>
@@ -284,7 +282,7 @@ const Depreciation = () => {
               {depriData &&
                 depriData?.map((item, index) => (
                   <React.Fragment key={index}>
-                    <tr className="main-row ">
+                    <tr className="main-row">
                       <td className="stick-header">
                         {"Phòng ban " + item.deptName}
                       </td>
@@ -329,28 +327,30 @@ const Depreciation = () => {
                           : "-"}
                       </td>
                     </tr>
-
                     {item?.assetTypes.map(
                       (subItem, subIndex) =>
                         submenuOpen && (
-                          <tr key={`${index}-${subIndex}`}>
-                            <td className="stick-header">{subItem.typeName}</td>
+                          <tr
+                            key={`${index}-${subIndex}`}
+                            className="tableRowTransition"
+                          >
+                            <td className="stick-header tableRowTransition">
+                              {subItem.typeName}
+                              <div class="popup">{subItem.typeName}</div>
+                            </td>
                             <td>{formatNumber(subItem.depreciationPrev)}</td>
                             <td>{formatNumber(subItem.months[1])}</td>
                             <td>{formatNumber(subItem.months[2])}</td>
                             <td>{formatNumber(subItem.months[3])}</td>
                             <td>{formatNumber(subItem.total1)}</td>
-
                             <td>{formatNumber(subItem.months[4])}</td>
                             <td>{formatNumber(subItem.months[5])}</td>
                             <td>{formatNumber(subItem.months[6])}</td>
                             <td>{formatNumber(subItem.total2)}</td>
-
                             <td>{formatNumber(subItem.months[7])}</td>
                             <td>{formatNumber(subItem.months[8])}</td>
                             <td>{formatNumber(subItem.months[9])}</td>
                             <td>{formatNumber(subItem.total3)}</td>
-
                             <td>{formatNumber(subItem.months[10])}</td>
                             <td>{formatNumber(subItem.months[11])}</td>
                             <td>

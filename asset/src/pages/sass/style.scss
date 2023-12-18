@@ -308,12 +308,7 @@ button {
         left: 0;
         z-index: 1;
       }
-      td {
-        max-width: 400px; /* Set the desired max-width */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
+
       .main-row td {
         color: #2e98d1;
         font-weight: 500;

@@ -1,13 +1,30 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./sass/style.scss";
 import { useParams } from "react-router-dom"; // Import useParams
+import { Button, Modal, Select, Input } from "antd";
 
 const Asset = () => {
   const { id } = useParams(); // Get the id from the URL
   const [currentAssetId, setCurrentAssetId] = useState(1);
   const [assetData, setAssetData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDeptValue, setSelectedDeptValue] = useState(); // 'all' or some default value
+  const [selectedUserValue, setSelectedUserValue] = useState(); // 'all'
+  const [inputValue, setInputValue] = useState(""); // 'all'
 
+  const [department, setDepartment] = useState([]);
+  const [user, setUser] = useState([]);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   useEffect(() => {
     let timer = null;
 
@@ -39,6 +56,78 @@ const Asset = () => {
         })
       : 0;
   };
+  //Modal
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/user/department`
+        );
+
+        const data = await response.json();
+        setDepartment(data.data.listDepartment);
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, []);
+  //userByDept
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/user/department/getUsers/${selectedDeptValue}`
+        );
+        if (!response.ok) {
+          setUser([]);
+        } else {
+          const data = await response.json();
+          setUser(data);
+        }
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, [selectedDeptValue]);
+
+  const handleChangeDept = (e) => {
+    setSelectedDeptValue(e);
+  };
+  const handleChangeUser = (e) => {
+    setSelectedUserValue(e);
+  };
+  const handleChangeInput = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  //submit form
+  const submitForm = async (e) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/asset/user/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Credentials": true,
+          },
+
+          body: { userId: selectedUserValue, note: inputValue },
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Failed to submit form:", response.statusText);
+        return;
+      }
+
+      console.log("Form submitted successfully");
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error submitting form:", error.message);
+    }
+  };
+
   return (
     <div className="asset__contain">
       <h2>Thông tin chung</h2>
@@ -162,6 +251,78 @@ const Asset = () => {
             ))}
           </div>
         )}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            marginRight: "45px",
+          }}
+        >
+          <Button type="primary" onClick={showModal} style={{ width: "150px" }}>
+            Bàn giao tài sản
+          </Button>
+          <Modal
+            title="Bàn giao tài sản"
+            open={isModalOpen}
+            onOk={(e) => submitForm(e)}
+            onCancel={handleCancel}
+            style={{ textAlign: "center" }}
+          >
+            <div className="modal__wrapper">
+              <div className="modal__content">
+                <label className="label" htmlFor="">
+                  Chọn phòng ban:{" "}
+                </label>
+                <Select
+                  value={selectedDeptValue}
+                  style={{
+                    width: "300px",
+                  }}
+                  onChange={(e) => handleChangeDept(e)}
+                  popupMatchSelectWidth={false}
+                >
+                  {!loading &&
+                    department?.map((dept, key) => (
+                      <Select.Option key={dept.id} value={dept.id}>
+                        {dept.name}
+                      </Select.Option>
+                    ))}
+                </Select>
+              </div>
+              <div className="modal__content">
+                <label className="label" htmlFor="">
+                  Chọn người dùng:{" "}
+                </label>
+                <Select
+                  value={selectedUserValue}
+                  style={{
+                    width: "300px",
+                  }}
+                  onChange={(e) => handleChangeUser(e)}
+                  popupMatchSelectWidth={false}
+                >
+                  {!loading &&
+                    user?.map((user, key) => (
+                      <Select.Option key={user.id} value={user.id}>
+                        {user.fullName}
+                      </Select.Option>
+                    ))}
+                </Select>{" "}
+              </div>
+              <div className="modal__content">
+                <label htmlFor="">Ghi chú</label>
+                <Input
+                  placeholder="Ghi chú"
+                  value={inputValue}
+                  onChange={handleChangeInput}
+                  style={{
+                    width: "300px",
+                  }}
+                />
+              </div>
+            </div>
+          </Modal>
+        </div>
       </div>
     </div>
   );

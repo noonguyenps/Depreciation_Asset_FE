@@ -37,7 +37,7 @@ const Manage = () => {
       <div className="asset__contain">
         <h2>Thông tin quản lý</h2>
         <div className="depri__content">
-          {depriData?.updateHistoryResponses.length > 0 ? (
+          {depriData?.deliveryHistories?.length > 0 ? (
             <>
               <div className="asset__detail">
                 <div className="asset-info">

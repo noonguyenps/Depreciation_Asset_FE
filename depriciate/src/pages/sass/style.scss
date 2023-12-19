@@ -214,33 +214,9 @@ body {
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      .popup {
-        position: absolute;
-        top: 5px;
-        left: 0;
-        display: none;
-        font-size: 10px;
-        padding: 5px;
-        background-color: #fff;
-        border-radius: 4px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        z-index: 999999;
+
+      .popup:hover {
         white-space: normal;
-      }
-      .popup::after {
-        content: "";
-        position: absolute;
-
-        border-style: solid;
-        border-width: 10px 10px 0 10px;
-        border-color: #fff transparent transparent transparent;
-
-        left: 10px;
-        top: 100%;
-      }
-
-      td:hover .popup {
-        display: block;
       }
       .main-row td {
         color: #2e98d1;

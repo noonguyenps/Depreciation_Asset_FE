@@ -15,7 +15,7 @@ const Depreciation = () => {
   const [depriData, setDepriData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const [department, setDepartment] = useState(0);
+  const [department, setDepartment] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState(0);
   const [selectAll, setSelectAll] = useState(false);
 
@@ -31,8 +31,14 @@ const Depreciation = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/depreciation/history/dept?&year=${viewYear}&ids=${selectedDepartment}`
+          `http://localhost:8080/api/depreciation/history/dept?year=${viewYear}&ids=${selectedDepartment}`
         );
+        if (!response.ok) {
+          // Handle non-successful HTTP status (error)
+          console.error(`Error fetching data. Status: ${response.status}`);
+          setLoading(false);
+          return;
+        }
 
         const data = await response.json();
         // setTotalPage(data.data.totalPage);
@@ -69,7 +75,7 @@ const Depreciation = () => {
         );
 
         const data = await response.json();
-        setDepartment(data);
+        setDepartment(data.data);
       } catch (error) {}
     };
 
@@ -79,6 +85,7 @@ const Depreciation = () => {
     // Default option with value 0
     { value: 0, label: "Tất cả" },
   ];
+  console.log("department", department);
   if (department?.listDepartment) {
     for (let i = 0; i < department.listDepartment.length; i++) {
       const asset = department.listDepartment[i];
@@ -334,9 +341,9 @@ const Depreciation = () => {
                             key={`${index}-${subIndex}`}
                             className="tableRowTransition"
                           >
-                            <td className="stick-header tableRowTransition">
+                            <td className="stick-header tableRowTransition popup">
                               {subItem.typeName}
-                              <div class="popup">{subItem.typeName}</div>
+                              {/* <div class="popup">{subItem.typeName}</div> */}
                             </td>
                             <td>{formatNumber(subItem.depreciationPrev)}</td>
                             <td>{formatNumber(subItem.months[1])}</td>

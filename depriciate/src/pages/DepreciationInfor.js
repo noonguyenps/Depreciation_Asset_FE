@@ -51,7 +51,7 @@ const DepreciationInfor = () => {
       <div className="asset__contain">
         <h2>Thông tin khấu hao</h2>
         <div className="depri__content">
-          {depriData?.updateHistoryResponses.length > 0 ? (
+          {depriData?.listDepreciationAssetHistory?.length > 0 ? (
             <>
               <div className="asset__detail">
                 <div className="asset-info">

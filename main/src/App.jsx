@@ -53,22 +53,8 @@ const App = () => {
       <Sidebar>
         <Suspense fallback={<FallbackComponent />}>
           <Routes>
-            <Route
-              path="/"
-              element={
-                <Suspense fallback={<div>Loading</div>}>
-                  <AssetsDetail />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/home"
-              element={
-                <Suspense fallback={<div>Loading</div>}>
-                  <AssetsDetail />
-                </Suspense>
-              }
-            />
+            <Route path="/" element={<AssetsDetail />} />
+            <Route path="/home" element={<AssetsDetail />} />
             <Route path="/asset/details/:id" element={<Asset />} />
             <Route
               path="/asset/depreciation-info"

@@ -557,9 +557,10 @@ button {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  label {
-    text-wrap: nowrap;
-  }
+  align-items: center;
+  margin-bottom: 10px;
 }
 .label {
+  width: 200px;
+  text-align: start;
 }

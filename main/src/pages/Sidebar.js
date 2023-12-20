@@ -139,8 +139,14 @@ const Sidebar = ({ children }) => {
                         : "navbar-item link link-parent"
                     }
                     onClick={() => {
-                      setIsSubMenuOpen((isSubMenuOpen) => !isSubMenuOpen);
-                      setIsOpen(true);
+                      const storedId = localStorage.getItem("currentAssetId");
+                      if (storedId !== null) {
+                        setIsSubMenuOpen((isSubMenuOpen) => !isSubMenuOpen);
+                        setIsOpen(true);
+                      } else {
+                        // Handle the case where storedId is null, e.g., show a message or perform other actions
+                        console.log("Stored ID is null. onClick is disabled.");
+                      }
                     }}
                   >
                     <div className="icon">{item.icon}</div>

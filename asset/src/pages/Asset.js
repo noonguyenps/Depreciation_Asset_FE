@@ -9,6 +9,8 @@ const Asset = () => {
   const [assetData, setAssetData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalRecallOpen, setIsModalRecallOpen] = useState(false);
+
   const [selectedDeptValue, setSelectedDeptValue] = useState(); // 'all' or some default value
   const [selectedUserValue, setSelectedUserValue] = useState(); // 'all'
   const [inputValue, setInputValue] = useState(""); // 'all'
@@ -19,11 +21,17 @@ const Asset = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
+
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const showModalRecall = () => {
+    setIsModalRecallOpen(true);
+  };
+
+  const handleCancelRecall = () => {
+    setIsModalRecallOpen(false);
   };
   useEffect(() => {
     let timer = null;
@@ -74,12 +82,20 @@ const Asset = () => {
   //userByDept
   useEffect(() => {
     const fetchData = async () => {
+      let url;
+      if (selectedDeptValue) {
+        url = `http://localhost:8080/api/user/department/getUsers/${selectedDeptValue}`;
+      } else {
+        url = "http://localhost:8080/api/user?page=0&size=1000";
+      }
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/user/department/getUsers/${selectedDeptValue}`
-        );
+        const response = await fetch(url);
         if (!response.ok) {
           setUser([]);
+        }
+        if (response.ok && !selectedDeptValue) {
+          const data = await response.json();
+          setUser(data.data.listUser);
         } else {
           const data = await response.json();
           setUser(data);
@@ -89,7 +105,7 @@ const Asset = () => {
 
     fetchData();
   }, [selectedDeptValue]);
-
+  console.log("user", user);
   const handleChangeDept = (e) => {
     setSelectedDeptValue(e);
   };
@@ -102,17 +118,24 @@ const Asset = () => {
 
   //submit form
   const submitForm = async (e) => {
+    const requestBody = {
+      userId: selectedUserValue,
+      note: inputValue,
+    };
+
     try {
       const response = await fetch(
-        `http://localhost:8080/api/asset/user/${id}`,
+        `http://localhost:8082/api/asset/user/${id}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Credentials": true,
-          },
 
-          body: { userId: selectedUserValue, note: inputValue },
+            // Add other headers as needed
+          },
+          credentials: "include",
+
+          body: JSON.stringify(requestBody),
         }
       );
 
@@ -128,6 +151,32 @@ const Asset = () => {
     }
   };
 
+  //recall
+  const submitFormRecall = async (e) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8082/api/asset/recall/${id}?note=${encodeURIComponent(
+          inputValue
+        )}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Failed to submit form:", response.statusText);
+        return;
+      }
+
+      console.log("Form submitted successfully");
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error submitting form:", error.message);
+    }
+  };
   return (
     <div className="asset__contain">
       <h2>Thông tin chung</h2>
@@ -208,7 +257,7 @@ const Asset = () => {
               </div>
             </div>
 
-            <h2>Phụ kiện kèm theo</h2>
+            {assetData.accessaries.length > 0 ? <h2>Phụ kiện kèm theo</h2> : ""}
             {assetData.accessaries.map((item, index) => (
               <div className="asset-item" key={index}>
                 <div className="asset-info__input">
@@ -258,8 +307,25 @@ const Asset = () => {
             marginRight: "45px",
           }}
         >
-          <Button type="primary" onClick={showModal} style={{ width: "150px" }}>
+          <Button
+            type="primary"
+            onClick={showModal}
+            style={{
+              width: "150px",
+              display: assetData?.userIdUsed ? "none" : "block",
+            }}
+          >
             Bàn giao tài sản
+          </Button>
+          <Button
+            type="primary"
+            onClick={showModalRecall}
+            style={{
+              width: "150px",
+              display: assetData?.userIdUsed ? "block" : "none",
+            }}
+          >
+            Thu hồi
           </Button>
           <Modal
             title="Bàn giao tài sản"
@@ -267,6 +333,9 @@ const Asset = () => {
             onOk={(e) => submitForm(e)}
             onCancel={handleCancel}
             style={{ textAlign: "center" }}
+            okText="Đồng ý"
+            cancelText="Huỷ"
+            okButtonProps={{ style: { width: "100px" } }}
           >
             <div className="modal__wrapper">
               <div className="modal__content">
@@ -276,7 +345,7 @@ const Asset = () => {
                 <Select
                   value={selectedDeptValue}
                   style={{
-                    width: "300px",
+                    width: "100%",
                   }}
                   onChange={(e) => handleChangeDept(e)}
                   popupMatchSelectWidth={false}
@@ -296,7 +365,7 @@ const Asset = () => {
                 <Select
                   value={selectedUserValue}
                   style={{
-                    width: "300px",
+                    width: "100%",
                   }}
                   onChange={(e) => handleChangeUser(e)}
                   popupMatchSelectWidth={false}
@@ -310,13 +379,42 @@ const Asset = () => {
                 </Select>{" "}
               </div>
               <div className="modal__content">
-                <label htmlFor="">Ghi chú</label>
+                <label className="label" htmlFor="">
+                  Ghi chú:
+                </label>
+                <Input
+                  placeholder="Ghi chú:"
+                  value={inputValue}
+                  onChange={handleChangeInput}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              </div>
+            </div>
+          </Modal>
+          <Modal
+            title="Thu hồi tài sản"
+            open={isModalRecallOpen}
+            onOk={(e) => submitFormRecall(e)}
+            onCancel={handleCancelRecall}
+            style={{ textAlign: "center" }}
+            okText="Đồng ý"
+            cancelText="Huỷ"
+            cancelButtonProps={{ style: { width: "100px" } }}
+            okButtonProps={{ style: { width: "100px" } }}
+          >
+            <div className="modal__wrapper">
+              <div className="modal__content">
+                <label className="label" htmlFor="" style={{ width: "100px" }}>
+                  Ghi chú:
+                </label>
                 <Input
                   placeholder="Ghi chú"
                   value={inputValue}
                   onChange={handleChangeInput}
                   style={{
-                    width: "300px",
+                    width: "100%",
                   }}
                 />
               </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import "./sass/style.scss";
+import "./sass/manage.scss";
 import { useParams } from "react-router-dom"; // Import useParams
 import { Button, Modal, Select, Input } from "antd";
 
@@ -172,7 +172,7 @@ const Asset = () => {
       }
 
       console.log("Form submitted successfully");
-      setIsModalOpen(false);
+      setIsModalRecallOpen(false);
     } catch (error) {
       console.error("Error submitting form:", error.message);
     }

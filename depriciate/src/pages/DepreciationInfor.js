@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // Import useParams
-import "./sass/style.scss";
+import "./sass/depreUpgrade.scss";
 import Loading from "../components/Loading";
 import { FaAngleDown, FaAngleRight } from "react-icons/fa";
 import NoUpgradeData from "../components/NoUpgradeData";
@@ -173,7 +173,7 @@ const DepreciationInfor = () => {
                         depriData?.listDepreciationAssetHistory?.map(
                           (item, index) => (
                             <React.Fragment key={index}>
-                              <tr>
+                              <tr className="table-parent__row">
                                 <td>
                                   <div className="user-item">
                                     <div className="image">
@@ -219,7 +219,11 @@ const DepreciationInfor = () => {
                                         >
                                           <thead>
                                             <tr className="table-header">
-                                              <th>{"Năm " + subItem.year}</th>
+                                              <th
+                                                style={{ alignItems: "start" }}
+                                              >
+                                                {"Năm " + subItem.year}
+                                              </th>
                                               <th>Tháng 1</th>
                                               <th>Tháng 2</th>
                                               <th>Tháng 3</th>
@@ -298,7 +302,6 @@ const DepreciationInfor = () => {
                                                   subItem.months[12]
                                                 )}
                                               </td>
-
                                               <td>
                                                 {formatNumber(
                                                   (subItem.months[1]

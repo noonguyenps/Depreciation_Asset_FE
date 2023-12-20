@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // Import useParams
-import "./sass/style.scss";
 import "./sass/manage.scss";
 
 import { FaAngleDown, FaAngleRight } from "react-icons/fa";
@@ -127,7 +126,7 @@ const Manage = () => {
                       {!loading &&
                         depriData?.deliveryHistories?.map((item, index) => (
                           <React.Fragment key={index}>
-                            <tr>
+                            <tr className="table-manage__row ">
                               <td>{item.deliveryType}</td>
                               <td>{item.userResponse.fullName}</td>
                               <td>{item.userResponse?.dept?.name}</td>
@@ -143,28 +142,47 @@ const Manage = () => {
                   </table>
                 </div>
               </div>
-              <div className="table-container">
-                <h4>Mất - Thanh lý - Huỷ bỏ</h4>
+              {depriData?.brokenHistories?.length > 0 ? (
+                <div className="table-container">
+                  <h4>Mất - Thanh lý - Huỷ bỏ</h4>
 
-                <div className="depri-infor">
-                  <table className="table-parent">
-                    <thead>
-                      <tr className="header-table">
-                        <th>Hoạt động</th>
-                        <th>Người sử dụng</th>
-                        <th>Phòng ban</th>
-                        <th>Vị trí hiện tại</th>
-                        <th>Ngày giao dịch</th>
-                        <th>Nhân viên kho</th>
-                        <th>Tình trạng tài sản</th>
-                        <th>Giá trị còn lại</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
+                  <div className="depri-infor">
+                    <table className="table-parent">
+                      <thead>
+                        <tr className="header-table">
+                          <th>Hoạt động</th>
+                          <th>Người sử dụng</th>
+                          <th>Phòng ban</th>
+                          <th>Vị trí hiện tại</th>
+                          <th>Ngày giao dịch</th>
+                          <th>Nhân viên kho</th>
+                          <th>Tình trạng tài sản</th>
+                          <th>Giá trị còn lại</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {!loading &&
+                          depriData?.brokenHistories?.map((item, index) => (
+                            <React.Fragment key={index}>
+                              <tr>
+                                <td>{item.deliveryType}</td>
+                                <td>{item.userResponse.fullName}</td>
+                                <td>{item.userResponse?.dept?.name}</td>
+                                <td>{item.userResponse?.dept.location}</td>
+                                <td>{item.deliveryDate}</td>
+                                <td>Nguyễn Văn Tiến</td>
+                                <td>Đã thanh lý</td>
+                                <td>{item.note}</td>
+                              </tr>
+                            </React.Fragment>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                ""
+              )}
             </>
           ) : (
             <NoUpgradeData />

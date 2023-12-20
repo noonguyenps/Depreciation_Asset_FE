@@ -34,101 +34,6 @@ body {
   transition: margin-left 0.3s ease;
 }
 
-.sidebar {
-  color: #fff;
-  height: 100vh;
-  width: 20%;
-  transition: all 0.3s ease;
-  .top_section-active {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 15px;
-    margin-bottom: 20px;
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    img {
-      width: 30px;
-      height: 30px;
-    }
-    .logo-title {
-      font-size: 24px;
-      text-wrap: nowrap;
-      color: #000;
-      margin-bottom: 0;
-    }
-  }
-  .top_section {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 20px 15px;
-    margin-bottom: 20px;
-
-    .bars svg {
-      width: 15px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 25px;
-      color: #000;
-    }
-  }
-
-  .link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-
-    color: #9197b3;
-    padding: 10px 10px;
-    gap: 15px;
-    margin-bottom: 15px;
-  }
-  .link-custom {
-    cursor: pointer;
-    font-size: 14px;
-  }
-  .link-subItem {
-    padding-left: 23px;
-  }
-  .link-parent:hover {
-    background: #dddddd;
-    border-radius: 5px;
-  }
-  .active {
-    background: #5932ea;
-    color: #fff;
-    border-radius: 5px;
-  }
-  .active1 {
-    color: black;
-  }
-  .icon {
-    align-items: center;
-    display: inline-flex;
-    width: 15px;
-    height: 15px;
-  }
-  .icon svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  .icon,
-  .link_text {
-    font-size: 14px;
-    text-wrap: nowrap;
-    line-height: 1;
-  }
-}
-.menu-section {
-  padding: 15px 15px;
-}
 .depri__content {
   background-color: #fff;
   padding: 20px 0;
@@ -252,12 +157,10 @@ body {
       }
 
       td {
-        max-width: 200px; /* Set the desired max-width */
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         padding: 15px 35px 15px 45px;
-
         text-align: center;
         .user-item {
           display: flex;

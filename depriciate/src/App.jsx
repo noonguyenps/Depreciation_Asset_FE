@@ -6,5 +6,5 @@ import Depreciation from "./pages/Depreciation";
 import DepreciationUpgrade from "./pages/DepreciationUpgrade";
 import DepreciationInfor from "./pages/DepreciationInfor";
 
-const App = () => <Depreciation />;
+const App = () => <DepreciationInfor />;
 ReactDOM.render(<App />, document.getElementById("app"));

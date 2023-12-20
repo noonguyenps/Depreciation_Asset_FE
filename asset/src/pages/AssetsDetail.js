@@ -41,6 +41,7 @@ const AssetsDetail = () => {
   const [selectedValue, setSelectedValue] = useState(-1); // 'all' or some default value
   //group
   const [assetGroup, setAssetGroup] = useState([]);
+  const [allAssetGroup, setAllAssetGroup] = useState([]);
 
   //inforTotal
   const [totalAsset, setTotalAsset] = useState(0); // 'all' or some default value
@@ -106,7 +107,7 @@ const AssetsDetail = () => {
     };
 
     fetchData();
-  }, []);
+  }, [allAssetGroup]);
   //Group
   useEffect(() => {
     const fetchData = async () => {
@@ -145,12 +146,10 @@ const AssetsDetail = () => {
         const response = await fetch(
           `http://localhost:8080/api/depreciation/count`
         );
-
         const data = await response.json();
         setTotalDepri(data);
       } catch (error) {}
     };
-
     fetchData();
   }, []);
   //Count User
@@ -160,7 +159,6 @@ const AssetsDetail = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(`http://localhost:8080/api/user/count`);
-
         const data = await response.json();
         setTotalUser(data);
       } catch (error) {}
@@ -174,17 +172,13 @@ const AssetsDetail = () => {
         const response = await fetch(
           `http://localhost:8080/api/user/department`
         );
-
         const data = await response.json();
-        console.log("depart", data);
         setDepartment(data);
       } catch (error) {}
     };
-
     fetchData();
   }, []);
 
-  console.log("department", department);
   useEffect(() => {
     setCurrentPage(0);
   }, [fromDateDebounce, toDateDebounce]);
@@ -251,11 +245,14 @@ const AssetsDetail = () => {
   };
   const toggleInputs = () => {
     setShowInputs(!showInputs);
-    console.log("showInputs", showInputs);
   };
   const handleChangeGroup = (e) => {
     setSelectedGroupValue(e);
-    setAssetType(assetGroup.filter((item) => item.id == e)[0].listAssetType);
+    if (assetGroup.filter((item) => item.id == e).length > 0) {
+      setAssetType(assetGroup.filter((item) => item.id == e)[0]?.listAssetType);
+    } else {
+      setAllAssetGroup(!allAssetGroup);
+    }
   };
   return (
     <div className="asset__content">

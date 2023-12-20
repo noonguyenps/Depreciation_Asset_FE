@@ -107,7 +107,11 @@ const DepreciationInfor = () => {
                   </div>
                   <div className="asset-info__input">
                     <label htmlFor="donViTinh">Số ngày trong tháng này</label>
-                    <input type="text" value={depriData.changePrice} disabled />
+                    <input
+                      type="text"
+                      value={depriData.lengthOfMonth}
+                      disabled
+                    />
                   </div>
                 </div>
 

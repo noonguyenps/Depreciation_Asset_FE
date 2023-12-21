@@ -143,11 +143,12 @@ body {
     overflow-x: auto;
     position: relative;
     max-width: 1400px;
-    .table-parent {
+    .table-parentDep {
       border-collapse: collapse;
       max-width: 1400px;
       white-space: nowrap; /* Ensure that rounded corners are applied */
       width: 100%;
+
       .header-table > th {
         color: #141a4e;
         background-color: #eaf9ff;
@@ -187,7 +188,7 @@ body {
       background-color: #f5f5f5;
     }
   }
-  .table-child__wrapper {
+  .table-child__wrapperDep {
     overflow-x: auto;
     td {
       overflow-x: auto;

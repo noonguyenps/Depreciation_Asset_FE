@@ -157,7 +157,7 @@ const DepreciationInfor = () => {
               <div className="table-container">
                 <h4>Lịch sử khấu hao</h4>
                 <div className="depri-infor">
-                  <table className="table-parent">
+                  <table className="table-parentDep">
                     <thead>
                       <tr className="header-table">
                         <th>Người sử dụng</th>
@@ -190,6 +190,7 @@ const DepreciationInfor = () => {
                                 <td>{item.toDate}</td>
                                 <td>{formatNumber(item.value)}</td>
                                 <td
+                                  style={{ padding: "0" }}
                                   onClick={() =>
                                     handleToggleChildRow(item.depreciationId)
                                   }
@@ -202,7 +203,7 @@ const DepreciationInfor = () => {
                                 </td>
                               </tr>
                               <tr
-                                className="table-child__wrapper"
+                                className="table-child__wrapperDep"
                                 style={{
                                   display: showChildRow[item.depreciationId]
                                     ? "table-row"

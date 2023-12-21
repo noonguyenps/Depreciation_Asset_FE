@@ -173,12 +173,11 @@ const AssetsDetail = () => {
           `http://localhost:8080/api/user/department`
         );
         const data = await response.json();
-        setDepartment(data);
+        setDepartment(data.data);
       } catch (error) {}
     };
     fetchData();
   }, []);
-
   useEffect(() => {
     setCurrentPage(0);
   }, [fromDateDebounce, toDateDebounce]);
